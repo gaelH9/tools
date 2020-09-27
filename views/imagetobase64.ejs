@@ -1,0 +1,34 @@
+<%-include('./partials/head'); %>
+  <body>
+    <%-include('./partials/navbar'); %>
+      <div class="container">
+          <h1 class="text-center">
+              Image to Base64 Converter
+          </h1>
+          <form>
+            <div class="form-group">
+                <input onchange="encodeImageFileAsURL(this)" class="form-control" type="file" name="file" id="file" required>
+            </div>
+            <div class="form-group">
+                <textarea class="form-control" name="" id="base64code" cols="30" rows="10" placeholder="Base64 Code"></textarea>
+            </div>
+        </form>
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script>
+      function encodeImageFileAsURL(element) {
+  var file = element.files[0];
+  var reader = new FileReader();
+  reader.onloadend = function() {
+    console.log('RESULT', reader.result)
+    $("#file").val("")
+    $("#base64code").html(reader.result)
+  }
+  reader.readAsDataURL(file);
+}
+  </script>
+</html>

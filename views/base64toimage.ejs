@@ -1,0 +1,57 @@
+<%-include('./partials/head'); %>
+  <body>
+    <%-include('./partials/navbar'); %>
+      <div class="container">
+          <h1 class="text-center">
+              Base64 to Image Converter
+          </h1>
+            <div class="form-group">
+                <textarea required class="form-control" name="" id="base64code" cols="30" rows="10" placeholder="Base64 Code"></textarea>
+            </div>
+            <div class="text-center" id="result">
+
+            </div>
+            <br>
+            <div class="form-group">
+                <button onclick="downloadImage()" class="btn btn-block btn-danger">
+                    Download Image
+                </button>
+            </div>
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script>
+      function downloadImage() {
+        
+        if($("#base64code").val() == ""){
+            alert("Please enter the base64 code")
+        }
+        else{
+
+        var base64code = $("#base64code").val()
+
+        var image = new Image()
+
+        image.src = base64code
+
+        $("#result").html(image)
+
+        var a = document.createElement('a')
+
+        a.href = image.src
+
+        a.download = "output.png"
+
+        $("#base64code").val("")
+
+        $("#result").fadeOut(2000)
+
+        a.click()
+        }
+  }
+
+  </script>
+</html>
