@@ -25,7 +25,7 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 80;
 
 app.use(express.static("public"));
 
@@ -227,10 +227,6 @@ app.get('/recordvideo',(req,res) => {
 
 app.get('/contactus',(req,res) => {
   res.render('contactus',{title:"Contact us Page - Free Media Tools"})
-})
-
-app.get('/freemediatools.com',(req,res) => {
-  res.redirect('http://www.freemediatools.com')
 })
 
 app.post(
