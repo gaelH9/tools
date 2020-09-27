@@ -229,6 +229,10 @@ app.get('/contactus',(req,res) => {
   res.render('contactus',{title:"Contact us Page - Free Media Tools"})
 })
 
+app.get('/freemediatools.com',(req,res) => {
+  res.redirect('http://www.freemediatools.com')
+})
+
 app.post(
   "/videotomp3",
   videotomp3upload.single("videotomp3file"),
@@ -306,7 +310,7 @@ app.post("/imageconverter", imageconverterupload.single("file"), (req, res) => {
     outputFilePath = Date.now() + "output." + format;
 
     exec(
-      `magick convert ${req.file.path} ${outputFilePath}`,
+      `convert ${req.file.path} ${outputFilePath}`,
       (err, stderr, stdout) => {
         if (err) {
           fs.unlinkSync(req.file.path);
@@ -403,7 +407,7 @@ app.post("/resizeimage", imageconverterupload.single("file"), (req, res) => {
       Date.now() + "output." + path.extname(req.file.originalname);
 
     exec(
-      `magick convert ${req.file.path} -resize ${width}x${height} ${outputFilePath}`,
+      `convert ${req.file.path} -resize ${width}x${height} ${outputFilePath}`,
       (err, stderr, stdout) => {
         if (err) {
           fs.unlinkSync(req.file.path);
@@ -439,7 +443,7 @@ app.post("/imagetopdf", imageconverterupload.array("file", 100), (req, res) => {
 
     outputFilePath = Date.now() + "output.pdf";
 
-    exec(`magick convert ${list} ${outputFilePath}`, (err, stderr, stdout) => {
+    exec(`convert ${list} ${outputFilePath}`, (err, stderr, stdout) => {
       if (err) {
         if (req.files) {
           req.files.forEach((file) => {
@@ -683,7 +687,7 @@ app.post("/compressimage", compressimageupload.single("file"), (req, res) => {
       Date.now() + "output" + path.extname(req.file.originalname);
 
     exec(
-      `magick convert ${req.file.path} -quality ${quality} ${outputFilePath}`,
+      `convert ${req.file.path} -quality ${quality} ${outputFilePath}`,
       (err, stderr, stdout) => {
         if (err) {
           fs.unlinkSync(req.file.path);
@@ -896,7 +900,7 @@ app.post("/mergeimages", imageconverterupload.array("file", 100), (req, res) => 
 
     outputFilePath = Date.now() + "output.png";
 
-    exec(`magick convert ${list} ${position} ${outputFilePath}`, (err, stderr, stdout) => {
+    exec(`convert ${list} ${position} ${outputFilePath}`, (err, stderr, stdout) => {
       if (err) {
         if (req.files) {
           req.files.forEach((file) => {
