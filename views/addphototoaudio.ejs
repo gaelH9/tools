@@ -1,0 +1,29 @@
+<%-include('./partials/head'); %>
+  <body>
+    <%-include('./partials/navbar'); %>
+      <div class="container">
+          <h1 class="text-center">
+              Add Photo to Audio Mp3
+          </h1>
+          <form action="/addphototoaudio" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="video">Upload Audio:</label>
+                <input class="form-control" type="file" accept=".mp3,audio/*" name="file" id="" required>
+            </div>
+            <div class="form-group">
+                <label for="image">Background Image:</label>
+                <input type="file" name="image" class="form-control" required id="">
+            </div>
+            <div class="form-group">
+                <button class="btn btn-block btn-danger">
+                    Download Video
+                </button>
+            </div>
+        </form>
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</html>

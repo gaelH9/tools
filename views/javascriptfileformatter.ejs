@@ -1,0 +1,40 @@
+<%-include('./partials/head'); %>
+  <body>
+    <%-include('./partials/navbar'); %>
+
+
+      <div class="container">
+          <h1 class="text-center">
+              Javascript File Formatter
+          </h1>
+          <form action="/javascriptfileformatter" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="code">Javascript File:</label>
+                <input class="form-control" type="file" name="file" accept=".js" required id=""/>
+            </div>
+            <div class="form-group">
+              <label for="bitrate">Style of Formatting</label>
+              <label class="radio-inline"><input type="radio" checked value="standard" name="style">standard</label>
+              <label class="radio-inline"><input type="radio" value="semicolons" name="style">semicolons</label>
+          </div>
+            <div class="form-group">
+                <button class="btn btn-danger btn-block">
+                   Format Javascript File
+                </button>
+            </div>
+        </form>
+
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/bootstrap-slider.min.js"></script>
+<script>
+   // Basic Slider
+   var slider = new Slider("#basic", {
+        tooltip: 'always'
+      });
+</script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</html>

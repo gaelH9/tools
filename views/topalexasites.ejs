@@ -1,0 +1,41 @@
+<%-include('./partials/head'); %>
+  <body>
+    <%-include('./partials/navbar'); %>
+
+      <div class="container">
+          <h1 class="text-center">
+              Top Alexa Global Websites
+          </h1>
+        <%if (flag) { %>
+            <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Alexa Rank</th>
+                    <th>Website Name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <%while(i<50){%>
+                  <tr>
+                    <td><%=data.data[i].rank%></td>
+                    <td><%=data.data[i].site%></td>
+                  </tr> 
+                    <% i++}%> 
+                </tbody>
+              </table>
+
+              
+        <% } %>
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script>
+    // Basic Slider
+    var slider = new Slider("#basic", {
+         tooltip: 'always'
+       });
+ </script>
+</html>

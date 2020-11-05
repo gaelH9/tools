@@ -1,0 +1,31 @@
+<%-include('./partials/head'); %>
+  <body>
+    <%-include('./partials/navbar'); %>
+
+      <div class="container">
+          <h1 class="text-center">
+              Keyword Research Tool For Google and Youtube
+          </h1>
+          <form action="/keywordresearch" method="post">
+            <div class="form-group">
+                <label for="files">Keyword:</label>
+                <input class="form-control" type="text" name="keyword" id="" required placeholder="Enter your keyword">
+            </div>
+            <div class="form-group">
+                <button class="btn btn-block btn-danger">
+                    Get Keyword Suggestions
+                </button>
+            </div>
+
+            <% for(var i=0; i<data.length; i++) {%>
+                <li><%= data[i] %></li>
+             <% } %>
+             </ul>
+        </form>
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</html>

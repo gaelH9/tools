@@ -1,0 +1,81 @@
+<%-include('./partials/head'); %>
+  <body>
+    <%-include('./partials/navbar'); %>
+
+      <div class="container">
+          <h1 class="text-center">
+              Alexa Rank of Site
+          </h1>
+          <form action="/alexasiteinfo" method="post">
+            <div class="form-group">
+                <label for="url">Website URL:</label>
+                <input class="form-control" type="text" placeholder="google.com" name="url" id="" required>
+            </div>
+            <br>
+            <div class="form-group">
+                <button class="btn btn-block btn-danger">
+                    Get Alexa Rank
+                </button>
+            </div>
+        </form>
+        <%if (flag) { %>
+            <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Alexa Rank</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><%=data.data.site_rank%></td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Top Keywords</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><%=data.data.top_keywords[0]%></td>
+                    <td><%=data.data.top_keywords[1]%></td>
+                    <td><%=data.data.top_keywords[2]%></td>
+                    <td><%=data.data.top_keywords[3]%></td>
+                    <td><%=data.data.top_keywords[4]%></td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Similar Sites</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><%=data.data.similar_sites[0]%></td>
+                    <td><%=data.data.similar_sites[1]%></td>
+                    <td><%=data.data.similar_sites[2]%></td>
+                    <td><%=data.data.similar_sites[3]%></td>
+                    <td><%=data.data.similar_sites[4]%></td>
+                  </tr>
+                </tbody>
+              </table>
+        <% } %>
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script>
+    // Basic Slider
+    var slider = new Slider("#basic", {
+         tooltip: 'always'
+       });
+ </script>
+</html>
