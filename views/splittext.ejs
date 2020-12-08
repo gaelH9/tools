@@ -1,0 +1,66 @@
+<%-include('./partials/head'); %>
+  <body>
+    <%-include('./partials/navbar'); %>
+      <div class="container">
+          <h1 class="text-center">
+              Split Text Online Tool By Symbols
+          </h1>
+            <div class="form-group">
+		<label for="input">Input Text:</label>
+                <textarea type="text" cols="20" rows="10" class="form-control" placeholder="Enter Text" id="text" required></textarea>
+            </div>
+	    <div class="form-group">
+		<label for="symbol">Split by Symbol:</label>
+		<select id="symbol" class="form-control">
+		<option value=" " selected>Space(Default)</option>
+                <option value=",">,(Comma)</option>
+		<option value=";">;(Semicolon)</option>
+		<option value="-">-(Dash)</option>
+		<option value="+">+(plus)</option>
+		<option value="/">/(divide)</option>
+		<option value="&">&(Ambersand)</option>
+		<option value="*">*(star)</option>
+		<option value="#">#(Hash)</option>
+		<option value="@">@(Attherate)</option>
+                </select>
+	    </div>
+            <div class="form-group">
+                <button id="button" class="btn btn-block btn-danger">
+                    Split Text
+                </button>
+            </div>
+	    <div class="form-group">
+		<label for="string">Output:</label>
+                <textarea type="text" cols="20" rows="10" class="form-control" placeholder="Result" id="code"></textarea>
+            </div>
+        
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<script>
+var symbol = " "
+    $("#button").click(function () {
+
+      
+
+      var text = $("#text").val();
+
+      var arraya = text.split(symbol);
+
+      for (var i = 0; i < arraya.length; i++) {
+        $("#code").append(arraya[i]);
+        $("#code").append("\n");
+      }
+
+
+    });
+
+$('#symbol').change(function() {
+            symbol = $(this).val()
+      });
+  </script>
+</html>

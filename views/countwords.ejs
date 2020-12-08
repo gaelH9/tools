@@ -1,0 +1,46 @@
+<%-include('./partials/head'); %>
+  <body>
+    <%-include('./partials/navbar'); %>
+      <div class="container">
+          <h1 class="text-center">
+              Count Words Online
+          </h1>
+            <div class="form-group">
+		<label for="input">Input Text:</label>
+                <textarea type="text" cols="20" rows="10" class="form-control" placeholder="Enter Text" id="text" required></textarea>
+            </div>
+	    
+            <div class="form-group">
+                <button id="button" class="btn btn-block btn-danger">
+                    Count Words
+                </button>
+            </div>
+
+           <div id="result"></div>
+	   
+        
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<script>
+var symbol = " "
+    $("#button").click(function () {
+    
+    var words = countWords($("#text").val())
+
+    $("#result").html("<h2>Your Text has " + words + " words</h2>")
+      
+})
+
+function countWords(str) {
+         str = str.replace(/(^\s*)|(\s*$)/gi,"");
+         str = str.replace(/[ ]{2,}/gi," ");
+         str = str.replace(/\n /,"\n");
+         return str.split(' ').length;
+      }
+  </script>
+</html>

@@ -1,257 +1,306 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset
-      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
-
-
-<url>
-  <loc>https://freemediatools.com/</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>1.00</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/contactus</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/privacypolicy</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/videotomp3</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/videoconverter</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/imageconverter</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/audioconverter</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/removeaudiofromvideo</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/resizeimage</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/imagetopdf</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/encryptpdf</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/increasevideospeed</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/decreasevideospeed</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/compressvideo</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/compressaudio</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/compressimage</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/changevideoresolution</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/addwatermarktovideo</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/webptoimages</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/imagestowebp</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/mergeimages</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/mergevideos</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/mergeaudio</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/imagetobase64</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/base64toimage</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/cropimage</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/compressfiles</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/recordvideo</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/encodeurl</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/decodeurl</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/texttospeech</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/speechtotext</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/mergepdf</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/docxtopdf</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/instagramFontGenerator</loc>
-  <lastmod>2020-10-05T17:02:05+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/speechtranslator</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/addphototoaudio</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/reversevideo</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/epubtopdf</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/pdftoepub</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/htmltopdf</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/ifsc</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/jsontoexcel</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/alexasiteinfo</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/topalexasites</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/topcountrysites</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/domainwhoisinfo</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/domainagechecker</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://freemediatools.com/rawstringtojson</loc>
-  <lastmod>2020-11-02T14:36:18+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-
-
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://freemediatools.com/</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/contactus</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/privacypolicy</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/videotomp3</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/videoconverter</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/imageconverter</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/audioconverter</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/removeaudiofromvideo</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/resizeimage</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/imagetopdf</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/encryptpdf</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/increasevideospeed</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/decreasevideospeed</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/compressvideo</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/compressaudio</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/compressimage</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/changevideoresolution</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/addwatermarktovideo</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/webptoimages</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/imagestowebp</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/mergeimages</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/mergevideos</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/mergeaudio</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/imagetobase64</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/base64toimage</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/cropimage</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/compressfiles</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/recordvideo</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/encodeurl</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/decodeurl</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/texttospeech</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/speechtotext</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/mergepdf</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/docxtopdf</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/speechtranslator</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/addphototoaudio</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/reversevideo</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/epubtopdf</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/pdftoepub</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/htmltopdf</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/ifsc</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/jsontoexcel</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/alexasiteinfo</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/topcountrysites</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/domainwhoisinfo</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/domainagechecker</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/topalexasites</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/rawstringtojson</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/xmlsitemapgenerator</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/detectbrowser</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/keywordresearch</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/javascriptformatter</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/javascriptfileformatter</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/htmlformatter</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/privacypolicygenerator</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/contactusgenerator</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/brokenlinkchecker</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/currencyconverter</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/ipaddresstolocation</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/csvtojson</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/xmltojson</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/jsontocsv</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/jsontoxml</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/jsonfiletoexcel</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/exceltojson</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/jsontoyaml</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/yamltojson</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/hjsontojson</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/jsontohjson</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/jsontoini</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/initojson</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/pptxtojson</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/removeemptylines</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/removeextraspaces</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/removeduplicatelines</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/domainchecker</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/emailchecker</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/instagramFontGenerator</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/decimaltobinary</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/decimaltohexadecimal</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/decimaltooctal</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/octaltodecimal</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/octaltobinary</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/octaltohexadecimal</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/hexadecimaltodecimal</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/hexadecimaltobinary</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/hexadecimaltooctal</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/binarytodecimal</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/binarytooctal</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/binarytohexadecimal</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/binarytoascii</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/asciitobinary</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/findandreplacetext</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/texttodecimal</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/decimaltotext</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/jsonstringify</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/splittext</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/repeattext</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/countwords</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/reversetext</loc>
+  </url>
+  <url>
+    <loc>https://freemediatools.com/addnumberlines</loc>
+  </url>
 </urlset>

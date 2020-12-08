@@ -1,0 +1,51 @@
+<%-include('./partials/head'); %>
+  <body>
+    <%-include('./partials/navbar'); %>
+      <div class="container">
+          <h1 class="text-center">
+              Find and Replace Text Online
+          </h1>
+            <div class="form-group">
+		<label for="input">Input Text:</label>
+                <textarea cols="20" rows="10" type="text" class="form-control" placeholder="Enter Input Text" id="input" required></textarea>
+            </div>
+            <div class="form-group">
+		<label for="find">Find Text</label>
+		<input type="text" id="find" required class="form-control" placeholder="Enter Find Text"/>
+            </div>
+	    <div class="form-group">
+		<label for="replace">Replace Text</label>
+		<input type="text" id="replace" required class="form-control" placeholder="Enter Replace Text"/>
+            </div>
+            <div class="form-group">
+                <button id="button" class="btn btn-block btn-danger">
+                    Find and Replace Text
+                </button>
+            </div>
+	    <div class="form-group">
+		<label for="output">Output Text:</label>
+                <textarea cols="20" rows="10" type="text" class="form-control" placeholder="Output Text" id="output"></textarea>
+            </div>
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+$("#button").click(function(){
+
+var input = $("#input").val()
+
+var find = $("#find").val()
+
+var replace = $("#replace").val()
+
+var result = input.split(find).join(replace)
+
+$("#output").val(result)
+
+
+})
+</script>
+</html>

@@ -1,0 +1,43 @@
+<%-include('./partials/head'); %>
+  <body>
+    <%-include('./partials/navbar'); %>
+      <div class="container">
+          <h1 class="text-center">
+              Text to Decimal Converter Online
+          </h1>
+            <div class="form-group">
+		<label for="input">Enter Input Text:</label>
+                    <textarea class="form-control" name="" id="text" placeholder="Enter Text" required cols="20" rows="10"></textarea>
+
+            </div>
+            <div class="form-group">
+                <button id="button" class="btn btn-block btn-danger">
+                    Convert to Decimal 
+                </button>
+            </div>
+	    <div class="form-group">
+		<label for="string">Output:</label>
+                <textarea class="form-control" name="" id="code" placeholder="Ascii Code" cols="20" rows="10"></textarea>
+            </div>
+        
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+function ascii(a) {
+      return a.charCodeAt(0);
+    }
+    $("#button").click(function(){
+       var text = $("#text").val()
+       var codes  
+
+       for(var i=0;i<text.length;i++){
+        $("#code").append((ascii(text[i])))
+        $("#code").append(" ")
+       }
+    })
+</script>
+</html>

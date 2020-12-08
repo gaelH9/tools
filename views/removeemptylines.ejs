@@ -1,0 +1,41 @@
+<%-include('./partials/head'); %>
+  <body>
+    <%-include('./partials/navbar'); %>
+      <div class="container">
+          <h1 class="text-center">
+              Remove Empty Lines From String Online
+          </h1>
+          
+            <div class="form-group">
+		<label for="string">Input Text:</label>
+                <textarea cols="20" rows="10" class="form-control" type="file" name="text" placeholder="Enter Text" id="inputtextarea" required></textarea>
+            </div>
+            <div class="form-group">
+                <button id="button" class="btn btn-block btn-danger">
+                    Remove Empty Lines
+                </button>
+            </div>
+	    <div class="form-group">
+		<label for="string">Output Text:</label>
+                <textarea cols="20" rows="10" class="form-control" type="file" name="outputtext" placeholder="Output Text Text" id="outputtextarea" required></textarea>
+            </div>
+        
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+
+jQuery(function ($) {
+    $("#button").on("click", function () {
+        var avalue = $('#inputtextarea').val();
+        var newVal = avalue.replace(/^\s*[\r\n]/gm, '');
+        //var finalResults = newVal.replace("\n", "");
+        $('#outputtextarea').val(newVal);
+    });
+})
+
+</script>
+</html>

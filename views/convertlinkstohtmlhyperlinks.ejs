@@ -1,0 +1,228 @@
+<%-include('./partials/head'); %>
+  <body>
+    <%-include('./partials/navbar'); %>
+
+        <div class="container">
+      <br>
+      <h1 class="text-center">Convert Links to HTML Links</h1>
+      <div class="form-group">
+        <label for="inputtextarea">Input Links:</label>
+        <textarea
+          name=""
+          id="text"
+          cols="30"
+          rows="10"
+          placeholder="Enter URLs"
+          required
+          class="form-control"
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="target">Link Target (optional)</label>
+        <label class="radio-inline"
+          ><input type="radio" name="target" value="notarget" checked /> No
+          Target</label
+        >
+        <label class="radio-inline"
+          ><input type="radio" name="target" value="_blank" /> _blank</label
+        >
+        <label class="radio-inline"
+          ><input type="radio" name="target" value="_self" /> _self</label
+        >
+        <label class="radio-inline"
+          ><input type="radio" name="target" value="_parent" /> _parent</label
+        >
+        <label class="radio-inline"
+          ><input type="radio" name="target" value="_top" /> _top</label
+        >
+      </div>
+      <div class="form-group">
+        <label for="spacing">Spacing:</label>
+        <label class="radio-inline"
+          ><input type="radio" name="spacing" value="newlines" checked /> New
+          Lines
+        </label>
+        <label class="radio-inline"
+          ><input type="radio" name="spacing" value=" " /> Spaces
+        </label>
+        <label class="radio-inline"
+          ><input type="radio" name="spacing" value="," /> Commas
+        </label>
+      </div>
+      <div class="form-group">
+        <label for="spacing">Link Formatting:</label>
+        <label class="radio-inline"
+          ><input type="radio" name="format" value="noformat" checked /> No
+          Formatting
+        </label>
+        <label class="radio-inline"
+          ><input type="radio" name="format" value="p" /> Paragraphs
+        </label>
+        <label class="radio-inline"
+          ><input type="radio" name="format" value="div" /> Div Formatting
+        </label>
+        <label class="radio-inline"
+          ><input type="radio" name="format" value="ul" /> Bulleted List
+        </label>
+        <label class="radio-inline"
+          ><input type="radio" name="format" value="ol" /> Numbered List
+        </label>
+      </div>
+      <div class="form-group">
+        <button id="button" class="btn btn-danger btn-block">
+          Convert to HTML Links
+        </button>
+      </div>
+
+      <div class="form-group">
+        <label for="output">Output Links</label>
+        <textarea
+          class="form-control"
+          name=""
+          id="code"
+          cols="30"
+          rows="10"
+          placeholder="HTML Links"
+        ></textarea>
+      </div>
+      <div class="form-group">
+        <button onclick="copytoclipboard()" class="btn btn-primary btn-block">
+          Copy to Clipboard
+        </button>
+      </div>
+    
+      
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+    $("#button").click(function () {
+      var target = $("input[name='target']:checked").val();
+      var spacing = $("input[name='spacing']:checked").val();
+      var format = $("input[name='format']:checked").val();
+      console.log(target);
+      console.log(spacing);
+      console.log(format);
+      var lines = $("#text").val().split(/\n/);
+      var output = [];
+      var outputText = [];
+      for (var i = 0; i < lines.length; i++) {
+        // only push this line if it contains a non whitespace character.
+        if (/\S/.test(lines[i])) {
+          outputText.push('"' + $.trim(lines[i]) + '"');
+          output.push($.trim(lines[i]));
+        }
+      }
+      console.log(output);
+      //if(format == "noformat"){
+      convertLinksToHyperLinks(output, target, spacing, format);
+      //}
+    });
+
+    function convertLinksToHyperLinks(output, target, spacing, format) {
+      var flag = false;
+      if (target == "notarget") {
+        target = "notarget";
+        flag = true;
+      }
+      if (spacing == "newlines") {
+        spacing = "\n";
+      }
+      if (format == "noformat") {
+        formatflag = true;
+      }
+
+      var htmllinks = "";
+
+      if (flag) {
+        if (format == "p") {
+          htmllinks += "<p>\n";
+          for (var i = 0; i < output.length; i++) {
+            htmllinks += `<a href="${output[i]}">${output[i]}</a><br>\n`;
+          }
+          htmllinks += "</p>";
+        }
+        if (format == "div") {
+          htmllinks += "<div>\n";
+          for (var i = 0; i < output.length; i++) {
+            htmllinks += `<a href="${output[i]}">${output[i]}</a><br>\n`;
+          }
+          htmllinks += "</div>";
+        }
+        if (format == "ul") {
+          htmllinks += "<ul>\n";
+          for (var i = 0; i < output.length; i++) {
+            htmllinks += `<li><a href="${output[i]}">${output[i]}</a></li>\n`;
+          }
+          htmllinks += "</ul>";
+        }
+        if (format == "ol") {
+          htmllinks += "<ol>\n";
+          for (var i = 0; i < output.length; i++) {
+            htmllinks += `<li><a href="${output[i]}">${output[i]}</a></li>\n`;
+          }
+          htmllinks += "</ol>";
+        }
+        if (format == "noformat") {
+          for (var i = 0; i < output.length; i++) {
+            htmllinks += `<a href="${output[i]}">${output[i]}</a>${spacing}`;
+          }
+        }
+      } else {
+        if (format == "p") {
+          htmllinks += "<p>\n";
+          for (var i = 0; i < output.length; i++) {
+            htmllinks += `<a target="${target}" href="${output[i]}">${output[i]}</a><br>\n`;
+          }
+          htmllinks += "</p>";
+        }
+        if (format == "div") {
+          htmllinks += "<div>\n";
+          for (var i = 0; i < output.length; i++) {
+            htmllinks += `<a target="${target}" href="${output[i]}">${output[i]}</a><br>\n`;
+          }
+          htmllinks += "</div>";
+        }
+        if (format == "ul") {
+          htmllinks += "<ul>\n";
+          for (var i = 0; i < output.length; i++) {
+            htmllinks += `<li><a target="${target}" href="${output[i]}">${output[i]}</a></li>\n`;
+          }
+          htmllinks += "</ul>";
+        }
+        if (format == "ol") {
+          htmllinks += "<ol>\n";
+          for (var i = 0; i < output.length; i++) {
+            htmllinks += `<li><a target="${target}" href="${output[i]}">${output[i]}</a></li>\n`;
+          }
+          htmllinks += "</ol>";
+        }
+        if (format == "noformat") {
+          for (var i = 0; i < output.length; i++) {
+            htmllinks += `<a target="${target}" href="${output[i]}">${output[i]}</a>${spacing}`;
+          }
+        }
+      }
+
+      $("#code").html(htmllinks);
+    }
+
+    function copytoclipboard() {
+      /* Get the text field */
+      var copyText = document.getElementById("code");
+
+      /* Select the text field */
+      copyText.select();
+      copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+
+      /* Copy the text inside the text field */
+      document.execCommand("copy");
+
+     
+    }
+  </script>
+</html>

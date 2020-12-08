@@ -2,11 +2,27 @@ const express = require("express");
 
 const bodyParser = require("body-parser");
 
+const cricData= require('cric-player-info');
+
 const prettier = require('prettier')
+
+var extract = require('pdf-text-extract')
+
+const {spawn} = require('child_process');
+
+var sanitize = require("sanitize-filename");
+
+const $ = require('jquery')
 
 var isJson = require('is-json')
 
+const currencycodes = require('currency-codes/data')
+
+const currencyconverter = require('currency-converter-lt')
+
 const browser = require('browser-detect');
+
+const prependhttp = require('prepend-http')
 
 const prettyFormat = require('pretty-format'); // CommonJS
 
@@ -27,6 +43,17 @@ const AlexaRank = require('alexa-rank-nodejs').default;
 var isValidDomain = require('is-valid-domain');
 
 const translate = require('@vitalets/google-translate-api');
+
+const IP2Region = require('ip2region');
+const query = new IP2Region();
+const res = query.search('120.24.78.68');
+
+translate(res.country, {to: 'en'}).then(response => {
+    console.log(response);
+    
+}).catch(err => {
+    console.error(err);
+});
 
 const pdfMerge = require('easy-pdf-merge');
 
@@ -71,6 +98,31 @@ app.use(bodyParser.json());
 const PORT = process.env.PORT || 5000;
 
 app.use(express.static("public"));
+
+var rimraf = require('rimraf')
+
+var uploadsDir = __dirname + '/public/uploads';
+
+fs.readdir(uploadsDir, function(err, files) {
+  files.forEach(function(file, index) {
+    fs.stat(path.join(uploadsDir, file), function(err, stat) {
+      var endTime, now;
+      if (err) {
+        return console.error(err);
+      }
+      now = new Date().getTime();
+      endTime = new Date(stat.ctime).getTime() + 3600000;
+      if (now > endTime) {
+        return rimraf(path.join(uploadsDir, file), function(err) {
+          if (err) {
+            return console.error(err);
+          }
+          console.log('successfully deleted');
+        });
+      }
+    });
+  });
+});
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -142,7 +194,28 @@ var imageconverterupload = multer({
   storage: storage,
   fileFilter: imageFilter,
 });
+var videotomp3upload2 = multer({
+  storage: storage,
+  limits: { fileSize: maxSize },
+  fileFilter: videoFilter,
+}).single('file');
+
+var videotomp3upload3 = multer({
+  storage: storage,
+  limits: { fileSize: maxSize },
+  fileFilter: videoFilter,
+}).single('file');
+var videotomp3upload4 = multer({
+  storage: storage,
+  limits: { fileSize: maxSize },
+  fileFilter: videoFilter,
+}).single('file');
+var imageconverter2 = multer({
+  storage: storage,
+  fileFilter: imageFilter,
+}).single('file');
 var audioconverter = multer({ storage: storage, fileFilter: audioFilter });
+var audioconverter2 = multer({ storage: storage, fileFilter: audioFilter }).single('file');
 var dir = "public";
 var subDirectory = "public/uploads";
 
@@ -331,294 +404,449 @@ app.get('/htmltopdf',(req,res)=>{
 
 })
 
-
-
-app.post(
-  "/videotomp3",
-  videotomp3upload.single("videotomp3file"),
-  (req, res) => {
-    if (req.file) {
-      console.log(req.file.path);
-
-      outputFilePath = Date.now() + "output.mp3";
-
-      exec(
-        `ffmpeg -i ${req.file.path} -preset ultrafast ${outputFilePath}`,
-        (err, stderr, stdout) => {
-          if (err) {
-            fs.unlinkSync(req.file.path);
-            res.send("Some error occured during conversion Please try Again");
-          }
-
-          res.download(outputFilePath, (err) => {
-            if (err) {
-              fs.unlinkSync(req.file.path);
-              fs.unlinkSync(outputFilePath);
-              res.send("Server is unable to download the file");
-            }
-
-            fs.unlinkSync(req.file.path);
-            fs.unlinkSync(outputFilePath);
-          });
-        }
-      );
+app.post('/uploadvideotomp3',(req,res) =>{
+  videotomp3upload2(req,res,function(err) {
+    if(err) {
+        return res.end("Error uploading file.");
     }
-  }
-);
+    res.json({
+        path:req.file.path
+    })
+});
+})
+
+app.post('/videotomp3',(req,res) => {
+  console.log(req.body)
+
+  output = Date.now() + "output.mp3"
+
+  exec(`ffmpeg -i ${req.body.path} -preset ultrafast ${output}`,(err,stdout,stderr) => {
+     if(err){
+         res.json({
+             error:"some error takes place"
+         })
+     }
+     res.json({
+         path:output
+     })
+  })
+});
+
+app.get('/download',(req,res) => {
+  var pathoutput = req.query.path
+  console.log(pathoutput)
+  var fullpath = path.join(__dirname,pathoutput)
+  res.download(fullpath,(err) =>{
+      if(err){
+          fs.unlinkSync(fullpath)
+          res.send(err)
+      }
+      fs.unlinkSync(fullpath)
+  })
+})
+
+app.post('/uploadvideoconverter',(req,res) =>{
+  videotomp3upload3(req,res,function(err) {
+    if(err) {
+        return res.end("Error uploading file.");
+    }
+    res.json({
+        path:req.file.path
+    })
+});
+})
 
 app.post(
   "/videoconverter",
-  videotomp3upload.single("videoconverterfile"),
   (req, res) => {
-    if (req.file) {
-      console.log(req.file.path);
+      console.log(req.body.path);
 
-      format = req.body.videoconverterformat;
+      format = req.body.format;
 
       outputFilePath = Date.now() + "output." + format;
 
       exec(
-        `ffmpeg -i ${req.file.path} -preset ultrafast -qscale 0  ${outputFilePath}`,
-        (err, stderr, stdout) => {
-          if (err) {
-            fs.unlinkSync(req.file.path);
-            res.send("Some error occured during conversion Please try Again");
-          }
-          console.log("video converted");
-          res.download(outputFilePath, (err) => {
-            if (err) {
-              fs.unlinkSync(req.file.path);
-              fs.unlinkSync(outputFilePath);
-              res.send("Server is unable to download the file");
-            }
-
-            fs.unlinkSync(req.file.path);
-            fs.unlinkSync(outputFilePath);
-          });
+        `ffmpeg -i ${req.body.path} -preset ultrafast -qscale 0  ${outputFilePath}`,
+        (err, stdout,stderr) => {
+          if(err){
+            res.json({
+                error:"some error takes place"
+            })
         }
-      );
-    }
-  }
-);
+        res.json({
+            path:outputFilePath
+        })
+  })
+    
+  })
 
-app.post("/imageconverter", imageconverterupload.single("file"), (req, res) => {
-  if (req.file) {
-    console.log(req.file.path);
-
-    format = req.body.format;
-
-    outputFilePath = Date.now() + "output." + format;
-
-    exec(
-      `convert ${req.file.path} ${outputFilePath}`,
-      (err, stderr, stdout) => {
-        if (err) {
-          fs.unlinkSync(req.file.path);
-          res.send("Some error occured during conversion Please try Again");
-        }
-        console.log("image converted");
-        res.download(outputFilePath, (err) => {
-          if (err) {
-            fs.unlinkSync(req.file.path);
-            fs.unlinkSync(outputFilePath);
-            res.send("Server is unable to download the file");
-          }
-
-          fs.unlinkSync(req.file.path);
-          fs.unlinkSync(outputFilePath);
-        });
-      }
-    );
-  }
-});
-
-app.post("/audioconverter", audioconverter.single("file"), (req, res) => {
-  if (req.file) {
-    console.log(req.file.path);
-
-    format = req.body.format;
-
-    outputFilePath = Date.now() + "output." + format;
-
-    exec(
-      `ffmpeg -i ${req.file.path} -preset ultrafast ${outputFilePath}`,
-      (err, stderr, stdout) => {
-        if (err) {
-          fs.unlinkSync(req.file.path);
-          res.send("Some error occured during conversion Please try Again");
-        }
-        console.log("video converted");
-        res.download(outputFilePath, (err) => {
-          if (err) {
-            fs.unlinkSync(req.file.path);
-            fs.unlinkSync(outputFilePath);
-            res.send("Server is unable to download the file");
-          }
-
-          fs.unlinkSync(req.file.path);
-          fs.unlinkSync(outputFilePath);
-        });
-      }
-    );
-  }
-});
 
 app.post(
-  "/removeaudiofromvideo",
-  videotomp3upload.single("file"),
-  (req, res) => {
-    if (req.file) {
-      console.log(req.file.path);
-
-      outputFilePath =
-        Date.now() + "output." + path.extname(req.file.originalname);
-
-      exec(
-        `ffmpeg -i ${req.file.path} -preset ultrafast -c copy -an ${outputFilePath}`,
-        (err, stderr, stdout) => {
-          if (err) {
-            fs.unlinkSync(req.file.path);
-            res.send("Some error occured during conversion Please try Again");
+    "/imageconverter",
+    (req, res) => {
+        console.log(req.body.path);
+  
+        format = req.body.format;
+  
+        outputFilePath = Date.now() + "output." + format;
+  
+        exec(
+          `ffmpeg -i ${req.body.path} -preset ultrafast ${outputFilePath}`,
+          (err, stdout,stderr) => {
+            if(err){
+              res.json({
+                  error:"some error takes place"
+              })
           }
-          console.log("video converted");
-          res.download(outputFilePath, (err) => {
-            if (err) {
-              fs.unlinkSync(req.file.path);
-              fs.unlinkSync(outputFilePath);
-              res.send("Server is unable to download the file");
+          res.json({
+              path:outputFilePath
+          })
+    })
+      
+    })
+  
+    app.post('/uploadimageconverter',(req,res) =>{
+      imageconverter2(req,res,function(err) {
+        if(err) {
+            return res.end("Error uploading file.");
+        }
+        res.json({
+            path:req.file.path
+        })
+    });
+    })
+      
+
+app.post(
+      "/audioconverter",
+      (req, res) => {
+          console.log(req.body.path);
+    
+          format = req.body.format;
+    
+          outputFilePath = Date.now() + "output." + format;
+    
+          exec(
+            `ffmpeg -i ${req.body.path} -preset ultrafast ${outputFilePath}`,
+            (err, stdout,stderr) => {
+              if(err){
+                res.json({
+                    error:"some error takes place"
+                })
             }
-
-            fs.unlinkSync(req.file.path);
-            fs.unlinkSync(outputFilePath);
-          });
-        }
-      );
-    }
-  }
-);
-
-app.post("/resizeimage", imageconverterupload.single("file"), (req, res) => {
-  if (req.file) {
-    console.log(req.file.path);
-    var width = parseInt(req.body.width);
-    var height = parseInt(req.body.height);
-
-    outputFilePath =
-      Date.now() + "output." + path.extname(req.file.originalname);
-
-    exec(
-      `convert ${req.file.path} -resize ${width}x${height} ${outputFilePath}`,
-      (err, stderr, stdout) => {
-        if (err) {
-          fs.unlinkSync(req.file.path);
-          res.send("Some error occured during conversion Please try Again");
-        }
-        console.log("image converted");
-        res.download(outputFilePath, (err) => {
-          if (err) {
-            fs.unlinkSync(req.file.path);
-            fs.unlinkSync(outputFilePath);
-            res.send("Server is unable to download the file");
+            res.json({
+                path:outputFilePath
+            })
+      })
+        
+      })
+    
+      app.post('/uploadaudioconverter',(req,res) =>{
+        audioconverter2(req,res,function(err) {
+          if(err) {
+              return res.end("Error uploading file.");
           }
+          res.json({
+              path:req.file.path
+          })
+      });
+      })
 
-          fs.unlinkSync(req.file.path);
-          fs.unlinkSync(outputFilePath);
+app.post(
+        "/removeaudiofromvideo",
+        (req, res) => {
+            console.log(req.body.path);
+      
+            outputFilePath = Date.now() + "output." + path.extname(req.body.path);
+      
+            exec(
+              `ffmpeg -i ${req.body.path} -preset ultrafast -c copy -an ${outputFilePath}`,
+              (err, stdout,stderr) => {
+                if(err){
+                  res.json({
+                      error:"some error takes place"
+                  })
+              }
+              res.json({
+                  path:outputFilePath
+              })
+        })
+          
+        })
+      
+        app.post('/uploadremoveaudiofromvideo',(req,res) =>{
+          videotomp3upload4(req,res,function(err) {
+            if(err) {
+                return res.end("Error uploading file.");
+            }
+            res.json({
+                path:req.file.path
+            })
         });
-      }
-    );
-  } else {
-    fs.unlinkSync(req.file.path);
-  }
-});
+        })
+      
+app.post(
+          "/resizeimage",
+          (req, res) => {
+              console.log(req.body.path);
+              var width = parseInt(req.body.width);
+    var height = parseInt(req.body.height);
+        
+              outputFilePath = Date.now() + "output." + path.extname(req.body.path);
+              console.log(outputFilePath)
+        
+              exec(
+                `convert ${req.body.path} -resize ${width}x${height} ${outputFilePath}`,
+                (err, stdout,stderr) => {
+                  if(err){
+                    res.json({
+                        error:"some error takes place"
+                    })
+                }
+                res.json({
+                    path:outputFilePath
+                })
+          })
+            
+          })
+          var resizeimageupload = multer({
+            storage: storage,
+            fileFilter: imageFilter,
+          }).single('file');
+        
+          app.post('/uploadresizeimage',(req,res) =>{
+            resizeimageupload(req,res,function(err) {
+              if(err) {
+                  return res.end("Error uploading file.");
+              }
+              res.json({
+                  path:req.file.path
+              })
+          });
+          })
+        
+   app.post(
+            "/imagetopdf",
+            (req, res) => {
 
-app.post("/imagetopdf", imageconverterupload.array("file", 100), (req, res) => {
-  if (req.files) {
-    var list = "";
+                var list = req.body.list
+               
+          
+                outputFilePath = Date.now() + "output.pdf";
+                console.log(outputFilePath)
+          
+                exec(
+                  `img2pdf ${list} -o ${outputFilePath}`,
+                  (err, stdout,stderr) => {
+                    if(err){
+                      res.json({
+                          error:"some error takes place"
+                      })
+                  }
+                  res.json({
+                      path:outputFilePath
+                  })
+            })
+              
+            })
+            var imagetopdfupload = multer({
+              storage: storage,
+              fileFilter: imageFilter,
+            }).array('file',100);
+          
+            app.post('/uploadimagetopdf',(req,res) =>{
+              imagetopdfupload(req,res,function(err) {
+                if(err) {
+                    return res.end("Error uploading file.");
+                }
+                var list = "";
     req.files.forEach((file) => {
       list += `${file.path}`;
       list += " ";
     });
-
-    console.log(list);
-
-    outputFilePath = Date.now() + "output.pdf";
-
-    exec(`img2pdf ${list} -o ${outputFilePath}`, (err, stderr, stdout) => {
-      if (err) {
-        if (req.files) {
-          req.files.forEach((file) => {
-            fs.unlinkSync(file.path);
-          });
-        }
-        res.send(err);
-      }
-      console.log("pdf converted");
-      res.download(outputFilePath, (err) => {
-        if (err) {
-          if (req.files) {
-            req.files.forEach((file) => {
-              fs.unlinkSync(file.path);
+                res.json({
+                    list:list
+                })
             });
-          }
-          fs.unlinkSync(outputFilePath);
-          res.send("Server is unable to download the file");
-        }
+            })
+ 
+app.post(
+              "/encryptpdf",
+              (req, res) => {
+                  console.log(req.body.path);
+                  var password = req.body.password
+            
+                  outputFilePath = Date.now() + "output.pdf";
+                  console.log(outputFilePath)
+            
+                  exec(
+                    `qpdf --encrypt ${password} ${password} 40 -- ${req.body.path} ${outputFilePath}`,
+                    (err, stdout,stderr) => {
+                      if(err){
+                        res.json({
+                            error:"some error takes place"
+                        })
+                    }
+                    res.json({
+                        path:outputFilePath
+                    })
+              })
+                
+              })
+              const pdfFilter = function (req, file, callback) {
+                var ext = path.extname(file.originalname);
+                if (ext !== ".pdf") {
+                  return callback("This Extension is not supported");
+                }
+                callback(null, true);
+              };
 
-        if (req.files) {
-          req.files.forEach((file) => {
-            fs.unlinkSync(file.path);
-          });
-        }
-        fs.unlinkSync(outputFilePath);
-      });
-    });
-  }
-});
+              var encryptpasswordupload = multer({
+                storage: storage,
+                fileFilter: pdfFilter,
+              }).single('file');
+            
+              app.post('/uploadencryptpdf',(req,res) =>{
+                encryptpasswordupload(req,res,function(err) {
+                  if(err) {
+                      return res.end("Error uploading file.");
+                  }
+                  res.json({
+                      path:req.file.path
+                  })
+              });
+              })
 
-const pdfFilter = function (req, file, callback) {
-  var ext = path.extname(file.originalname);
-  if (ext !== ".pdf") {
-    return callback("This Extension is not supported");
-  }
-  callback(null, true);
-};
+app.post(
+                "/increasevideospeed",
+                (req, res) => {
+                    console.log(req.body.path);
+                    var speed = req.body.speed
+              
+                    outputFilePath = Date.now() + "output" + path.extname(req.body.path);
+                    console.log(outputFilePath)
+              
+                    exec(
+                      `ffmpeg -i ${req.body.path} -preset ultrafast -filter_complex "[0:v]setpts=${speed}*PTS[v];[0:a]atempo=2.0[a]" -map "[v]" -map "[a]" -qscale 0 ${outputFilePath}`,
+                      (err, stdout,stderr) => {
+                        if(err){
+                          res.json({
+                              error:"some error takes place"
+                          })
+                      }
+                      res.json({
+                          path:outputFilePath
+                      })
+                })
+                  
+                })
+          
+                var increasevideospeedupload = multer({
+                  storage: storage,
+                  fileFilter: videoFilter,
+                }).single('file');
+              
+                app.post('/uploadincreasevideospeed',(req,res) =>{
+                  increasevideospeedupload(req,res,function(err) {
+                    if(err) {
+                        return res.end("Error uploading file.");
+                    }
+                    res.json({
+                        path:req.file.path
+                    })
+                });
+                })
+              
+          
+                app.post(
+                  "/decreasevideospeed",
+                  (req, res) => {
+                      console.log(req.body.path);
+                      var speed = req.body.speed
+                
+                      outputFilePath = Date.now() + "output" + path.extname(req.body.path);
+                      console.log(outputFilePath)
+                
+                      exec(
+                        `ffmpeg -i ${req.body.path} -preset ultrafast -filter:v "setpts=${speed}*PTS" -qscale 0 ${outputFilePath}`,
+                        (err, stdout,stderr) => {
+                          if(err){
+                            res.json({
+                                error:"some error takes place"
+                            })
+                        }
+                        res.json({
+                            path:outputFilePath
+                        })
+                  })
+                    
+                  })
+            
+                  var decreasevideospeedupload = multer({
+                    storage: storage,
+                    fileFilter: videoFilter,
+                  }).single('file');
+                
+                  app.post('/uploaddecreasevideospeed',(req,res) =>{
+                    decreasevideospeedupload(req,res,function(err) {
+                      if(err) {
+                          return res.end("Error uploading file.");
+                      }
+                      res.json({
+                          path:req.file.path
+                      })
+                  });
+                  })
+
+app.post(
+                    "/compressvideo",
+                    (req, res) => {
+                        console.log(req.body.path);
+        
+                  
+                        outputFilePath = Date.now() + "output" + path.extname(req.body.path);
+                        console.log(outputFilePath)
+                  
+                        exec(
+                          `ffmpeg -i ${req.body.path} -preset ultrafast ${outputFilePath}`,
+                          (err, stdout,stderr) => {
+                            if(err){
+                              res.json({
+                                  error:"some error takes place"
+                              })
+                          }
+                          res.json({
+                              path:outputFilePath
+                          })
+                    })
+                      
+                    })
+              
+                    var compressvideoupload = multer({
+                      storage: storage,
+                      fileFilter: videoFilter,
+                    }).single('file');
+                  
+                    app.post('/uploadcompressvideo',(req,res) =>{
+                      compressvideoupload(req,res,function(err) {
+                        if(err) {
+                            return res.end("Error uploading file.");
+                        }
+                        res.json({
+                            path:req.file.path
+                        })
+                    });
+                    })
+                  
+
+                
+            
+
+
+            
+          
 
 const pdfconverterupload = multer({ storage: storage, fileFilter: pdfFilter });
-
-app.post("/encryptpdf", pdfconverterupload.single("file"), (req, res) => {
-  if (req.file) {
-    var password = req.body.password;
-
-    console.log(req.file.path);
-
-    outputFilePath = Date.now() + "output.pdf";
-
-    exec(
-      `qpdf --encrypt ${password} ${password} 40 -- ${req.file.path} ${outputFilePath}`,
-      (err, stderr, stdout) => {
-        if (err) {
-          fs.unlinkSync(req.file.path);
-          fs.unlinkSync(outputFilePath);
-
-          res.send("Some error occured during conversion Please try Again");
-        }
-        console.log("pdf converted");
-        res.download(outputFilePath, (err) => {
-          if (err) {
-            fs.unlinkSync(req.file.path);
-
-            fs.unlinkSync(outputFilePath);
-            res.send("Server is unable to download the file");
-          }
-          fs.unlinkSync(req.file.path);
-          fs.unlinkSync(outputFilePath);
-        });
-      }
-    );
-  }
-});
-
-
 
 app.post("/pdftoepub", pdfconverterupload.single("file"), (req, res) => {
   if (req.file) {
@@ -724,40 +952,40 @@ const htmltopdfconverter = multer({ storage: storage, fileFilter: htmlfilter });
 
 app.post("/htmltopdf", htmltopdfconverter.single("file"), (req, res) => {
   if (req.file) {
+var input = req.file.path
+var output = Date.now() + "output.pdf"
 
-var pdfoutput = Date.now() + "output.pdf"
+ var dataToSend;
+ // spawn new child process to call the python script
+ const python = spawn('python3', ['htmltopdf.py',input,output]);
+ // collect data from script
+ python.stdout.on('data', function (data) {
+  console.log('Pipe data from python script ...');
+  dataToSend = data.toString();
+ });
+ // in close event we are sure that stream from child process is closed
+ python.on('close', (code) => {
+ console.log(`child process close all stdio with code ${code}`);
+ // send data to browser
+ res.download(output,(err) =>{
 
-	var options = {
-  input: path.join(__dirname,req.file.path),
-  output: path.join(__dirname, pdfoutput),
-  //authors: '"Seth Vincent"',
-  pageBreaksBefore: '//h:h1',
-  chapter: '//h:h1',
-  insertBlankLine: true,
-  insertBlankLineSize: '1',
-  lineHeight: '12',
-  marginTop: '50',
-  marginRight: '50',
-  marginBottom: '50',
-  marginLeft: '50'
+if(err) {
+
+fs.unlinkSync(input)
+fs.unlinkSync(output)
+res.send(err)
+
 }
- 
-/*
-* create epub file
-*/
-ebookconvert(options, function (err) {
-  if (err) console.log(err)
-  res.download(pdfoutput,(err) => {
-	if(err){
-          fs.unlinkSync(pdfoutput)
-          res.send("Unable to download the file")		
-	}
 
-	fs.unlinkSync(pdfoutput)
-  })
+fs.unlinkSync(input)
+fs.unlinkSync(output)
+
 })
+ });
 
-  }
+}
+
+	
 });
 
 
@@ -1491,7 +1719,7 @@ app.post('/exceltopdf',exceltopdfupload.single('file'),(req,res) => {
     console.log(req.file.path)
     outputFilePath = Date.now() + "output.pdf"
 
-    exec(`libreoffice --convert-to pdf --outputfile ${outputFilePath} ${req.file.path}`,(err,stderr,stdout) => {
+    exec(`libreoffice --convert-to pdf --outputfile ${outputFilePath} ${req.file.path}`,(err,stdout,stderr) => {
       if(err){
         fs.unlinkSync(req.file.path)
         fs.unlinkSync(outputFilePath)
@@ -2182,6 +2410,1957 @@ app.post('/contactusgenerator',(req,res) => {
     res.render('contactustemplate',{title:'FREE Contact Us Generator Online For Websites - Generate Free Contact Us Page For your Domain - FreeMediaTools.com',email:email,websitename:name,websiteurl:url})
 })
 
+
+
+app.get('/brokenlinkchecker',(req,res) => {
+    res.render('brokenlinkchecker',{title:'FREE Broken Links Checker Tool Online For Website and Domain - Broken Link Checker - FreeMediaTools.com'
+,info:''})
+})
+
+app.post('/brokenlinkchecker',(req,res) => {
+var url = prependhttp(req.body.url)
+
+
+
+console.log(url)
+    exec(`brkn ${url} --verbose`,(err,stdout,stderr) => {
+
+        console.log(stdout)
+
+        res.render('brokenlinkchecker',{title:'FREE Broken Links Checker Tool Online For Website and Domain - Broken Link Checker - FreeMediaTools.com'
+,info:stdout})
+    })
+
+})
+
+
+app.get('/currencyconverter',(req,res) => {
+  
+  res.render('currencyconverter',{title:'FREE Currency Converter Online Tool to get Convert Currencies Online',codes:currencycodes,response:''})
+})
+
+app.post('/currencyconverter',(req,res) => {
+  var amount = parseInt(req.body.amount)
+  var from = req.body.from
+  var to = req.body.to
+
+  console.log(amount)
+  console.log(from)
+  console.log(to)
+
+  let currencyConverter = new currencyconverter({from:from, to:to, amount:amount})
+
+currencyConverter.convert().then((response) => {
+
+    console.log(response) //or do something else
+    res.render('currencyconverter',{title:'FREE Currency Converter Online Tool to get Convert Currencies Online',codes:currencycodes,response:amount + " " + from + " = " + response + " " + to})
+
+})
+
+})
+
+
+app.get('/ipaddresstolocation',(req,res) => {
+    res.render('ipaddresstolocation',{title:'FREE IP Address Or Website to Location Tracker Online Tool - Track IP Address Location Online - FreeMediaTools.com'
+,info:''})
+})
+
+app.post('/ipaddresstolocation',(req,res) => {
+var url = req.body.ipaddress
+
+
+
+console.log(url)
+    exec(`lookup ${url}`,(err,stdout,stderr) => {
+
+        res.render('ipaddresstolocation',{title:'FREE IP Address Or Website to Location Tracker Online Tool - Track IP Address Location Online - FreeMediaTools.com'
+,info:stdout})
+    })
+
+})
+
+app.get('/csvtojson',(req,res) => {
+
+res.render('csvtojson',{title:'FREE CSV File to JSON Online Converter Tool - Online CSV File to JSON File Converter Tool - FreeMediaTools.com'})
+
+})
+
+const csvFilter = function (req, file, callback) {
+  var ext = path.extname(file.originalname);
+  if (
+    ext !== ".csv"
+  ) {
+    return callback("This Extension is not supported");
+  }
+  callback(null, true);
+};
+
+var csvtojsonupload = multer({
+  storage: storage,
+  fileFilter: csvFilter
+});
+
+app.post('/csvtojson',csvtojsonupload.single('file'),(req,res) => {
+
+var outputpath = Date.now() + "output.json"
+
+if(req.file){
+
+exec(`any-json convert ${req.file.path} ${outputpath}`,(err,stdout,stderr) => {
+
+if(err){
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(outputpath)
+res.send(err)
+}
+
+res.download(outputpath,(err) => {
+
+if(err){
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(outputpath)
+res.send("Unable to download the file")
+}
+
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(outputpath)
+
+})
+
+})
+
+}
+
+
+})
+
+
+
+
+app.get('/xmltojson',(req,res) => {
+
+res.render('xmltojson',{title:'FREE XML File to JSON Online Converter Tool - Online XML File to JSON File Converter Tool - FreeMediaTools.com'})
+
+})
+
+const xmlFilter = function (req, file, callback) {
+  var ext = path.extname(file.originalname);
+  if (
+    ext !== ".xml"
+  ) {
+    return callback("This Extension is not supported");
+  }
+  callback(null, true);
+};
+
+var xmltojsonupload = multer({
+  storage: storage,
+  fileFilter: xmlFilter
+});
+
+app.post('/xmltojson',xmltojsonupload.single('file'),(req,res) => {
+
+var outputpath = Date.now() + "output.json"
+
+if(req.file){
+
+exec(`any-json convert ${req.file.path} ${outputpath}`,(err,stdout,stderr) => {
+
+if(err){
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(outputpath)
+res.send(err)
+}
+
+res.download(outputpath,(err) => {
+
+if(err){
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(outputpath)
+res.send("Unable to download the file")
+}
+
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(outputpath)
+
+})
+
+})
+
+}
+
+
+})
+
+
+
+
+
+
+app.get('/jsontocsv',(req,res) => {
+
+res.render('jsontocsv',{title:'FREE JSON File to CSV Online Converter Tool - Online JSON File to CSV File Converter Tool - FreeMediaTools.com'})
+
+})
+
+const jsonFilter = function (req, file, callback) {
+  var ext = path.extname(file.originalname);
+  if (
+    ext !== ".json"
+  ) {
+    return callback("This Extension is not supported");
+  }
+  callback(null, true);
+};
+
+var jsonupload = multer({
+  storage: storage,
+  fileFilter: jsonFilter
+});
+
+app.post('/jsontocsv',jsonupload.single('file'),(req,res) => {
+
+var outputpath = Date.now() + "output.csv"
+var inputfile = Date.now() + "input.json"
+
+if(req.file){
+
+var jsonarray = []
+
+jsonarray.push(JSON.parse(fs.readFileSync(req.file.path)))
+
+console.log(fs.readFileSync(req.file.path))
+
+console.log(jsonarray)
+
+fs.writeFileSync(inputfile,JSON.stringify(jsonarray))
+
+exec(`any-json convert ${inputfile} ${outputpath}`,(err,stdout,stderr) => {
+
+if(err){
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(inputfile)
+fs.unlinkSync(outputpath)
+res.send(err)
+}
+
+res.download(outputpath,(err) => {
+
+if(err){
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(inputfile)
+fs.unlinkSync(outputpath)
+res.send("Unable to download the file")
+}
+
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(inputfile)
+fs.unlinkSync(outputpath)
+
+})
+
+})
+
+}
+
+
+})
+
+
+
+
+
+
+app.get('/jsontoxml',(req,res) => {
+
+res.render('jsontoxml',{title:'FREE JSON File to XML Online Converter Tool - Online JSON File to XML File Converter Tool - FreeMediaTools.com'})
+
+})
+
+
+var jsonupload = multer({
+  storage: storage,
+  fileFilter: jsonFilter
+});
+
+app.post('/jsontoxml',jsonupload.single('file'),(req,res) => {
+
+var outputpath = Date.now() + "output.xml"
+var inputfile = Date.now() + "input.json"
+
+if(req.file){
+
+var jsonarray = []
+
+jsonarray.push(JSON.parse(fs.readFileSync(req.file.path)))
+
+console.log(fs.readFileSync(req.file.path))
+
+console.log(jsonarray)
+
+fs.writeFileSync(inputfile,JSON.stringify(jsonarray))
+
+exec(`any-json convert ${inputfile} ${outputpath}`,(err,stdout,stderr) => {
+
+if(err){
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(inputfile)
+fs.unlinkSync(outputpath)
+res.send(err)
+}
+
+res.download(outputpath,(err) => {
+
+if(err){
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(outputpath)
+fs.unlinkSync(inputfile)
+res.send("Unable to download the file")
+ }
+
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(outputpath)
+fs.unlinkSync(inputfile)
+
+})
+
+})
+
+}
+
+
+})
+
+
+
+
+
+
+
+
+app.get('/jsonfiletoexcel',(req,res) => {
+
+res.render('jsonfiletoexcel',{title:'FREE JSON File to Excel Online Converter Tool - Online JSON File to XLS/XLSX File Converter Tool - FreeMediaTools.com'})
+
+})
+
+
+
+
+var jsonupload = multer({
+  storage: storage,
+  fileFilter: jsonFilter
+});
+
+app.post('/jsonfiletoexcel',jsonupload.single('file'),(req,res) => {
+
+var outputpath = Date.now() + "output.xlsx"
+var inputfile = Date.now() + "input.json"
+
+if(req.file){
+
+var jsonarray = []
+
+jsonarray.push(JSON.parse(fs.readFileSync(req.file.path)))
+
+console.log(fs.readFileSync(req.file.path))
+
+console.log(jsonarray)
+
+fs.writeFileSync(inputfile,JSON.stringify(jsonarray))
+
+exec(`any-json convert ${inputfile} ${outputpath}`,(err,stdout,stderr) => {
+
+if(err){
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(inputfile)
+fs.unlinkSync(outputpath)
+res.send(err)
+}
+
+res.download(outputpath,(err) => {
+
+if(err){
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(inputfile)
+fs.unlinkSync(outputpath)
+res.send("Unable to download the file")
+}
+
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(inputfile)
+fs.unlinkSync(outputpath)
+
+})
+
+})
+
+}
+
+
+})
+
+
+
+
+
+
+app.get('/exceltojson',(req,res) => {
+
+res.render('exceltojson',{title:'FREE Excel File to JSON Online Converter Tool - Online XLS/XLSX File to JSON File Converter Tool - FreeMediaTools.com'})
+
+})
+
+
+const exceltojsonFilter = function (req, file, callback) {
+  var ext = path.extname(file.originalname);
+  if (
+    ext !== ".xls" && ext !== ".xlsx"
+  ) {
+    return callback("This Extension is not supported");
+  }
+  callback(null, true);
+};
+
+
+var exceltojsonlatestupload = multer({
+  storage: storage,
+  fileFilter: exceltojsonFilter
+});
+
+app.post('/exceltojson',exceltojsonlatestupload.single('file'),(req,res) => {
+
+var outputpath = Date.now() + "output.json"
+
+if(req.file){
+
+var jsonarray = []
+
+
+exec(`any-json convert ${req.file.path} ${outputpath}`,(err,stdout,stderr) => {
+
+if(err){
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(outputpath)
+res.send(err)
+}
+
+res.download(outputpath,(err) => {
+
+if(err){
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(outputpath)
+res.send("Unable to download the file")
+}
+
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(outputpath)
+
+})
+
+})
+
+}
+
+
+})
+
+
+
+
+
+
+
+
+
+app.get('/yamltojson',(req,res) => {
+
+res.render('yamltojson',{title:'FREE YAML File to JSON Online Converter Tool - Online YAML File to JSON File Converter Tool - FreeMediaTools.com'})
+
+})
+
+
+const yamltojsonFilter = function (req, file, callback) {
+  var ext = path.extname(file.originalname);
+  if (
+    ext !== ".yaml"
+  ) {
+    return callback("This Extension is not supported");
+  }
+  callback(null, true);
+};
+
+
+var yamltojsonlatestupload = multer({
+  storage: storage,
+  fileFilter: yamltojsonFilter
+});
+
+app.post('/yamltojson',yamltojsonlatestupload.single('file'),(req,res) => {
+
+var outputpath = Date.now() + "output.json"
+
+if(req.file){
+
+
+
+exec(`any-json convert ${req.file.path} ${outputpath}`,(err,stdout,stderr) => {
+
+if(err){
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(outputpath)
+res.send(err)
+}
+
+res.download(outputpath,(err) => {
+
+if(err){
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(outputpath)
+res.send("Unable to download the file")
+}
+
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(outputpath)
+
+})
+
+})
+
+}
+
+
+})
+
+
+
+
+
+app.get('/jsontoyaml',(req,res) => {
+
+res.render('jsontoyaml',{title:'FREE JSON File to YAML Online Converter Tool - Online JSON File to YAML File Converter Tool - FreeMediaTools.com'})
+
+})
+
+
+
+
+var jsonupload = multer({
+  storage: storage,
+  fileFilter: jsonFilter
+});
+
+app.post('/jsontoyaml',jsonupload.single('file'),(req,res) => {
+
+var outputpath = Date.now() + "output.yaml"
+var inputfile = Date.now() + "input.json"
+
+if(req.file){
+
+var jsonarray = []
+
+jsonarray.push(JSON.parse(fs.readFileSync(req.file.path)))
+
+console.log(fs.readFileSync(req.file.path))
+
+console.log(jsonarray)
+
+fs.writeFileSync(inputfile,JSON.stringify(jsonarray))
+
+exec(`any-json convert ${inputfile} ${outputpath}`,(err,stdout,stderr) => {
+
+if(err){
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(inputfile)
+fs.unlinkSync(outputpath)
+res.send(err)
+}
+
+res.download(outputpath,(err) => {
+
+if(err){
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(inputfile)
+fs.unlinkSync(outputpath)
+res.send("Unable to download the file")
+}
+
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(inputfile)
+fs.unlinkSync(outputpath)
+
+})
+
+})
+
+}
+
+
+})
+
+
+
+
+
+app.get('/jsontohjson',(req,res) => {
+
+res.render('jsontohjson',{title:'FREE JSON File to HJSON Online Converter Tool - Online JSON File to HJSON File Converter Tool - FreeMediaTools.com'})
+
+})
+
+
+
+
+var jsonupload = multer({
+  storage: storage,
+  fileFilter: jsonFilter
+});
+
+app.post('/jsontohjson',jsonupload.single('file'),(req,res) => {
+
+var outputpath = Date.now() + "output.hjson"
+var inputfile = Date.now() + "input.json"
+
+if(req.file){
+
+var jsonarray = []
+
+jsonarray.push(JSON.parse(fs.readFileSync(req.file.path)))
+
+console.log(fs.readFileSync(req.file.path))
+
+console.log(jsonarray)
+
+fs.writeFileSync(inputfile,JSON.stringify(jsonarray))
+
+exec(`any-json convert ${inputfile} ${outputpath}`,(err,stdout,stderr) => {
+
+if(err){
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(inputfile)
+fs.unlinkSync(outputpath)
+res.send(err)
+}
+
+res.download(outputpath,(err) => {
+
+if(err){
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(inputfile)
+fs.unlinkSync(outputpath)
+res.send("Unable to download the file")
+}
+
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(inputfile)
+fs.unlinkSync(outputpath)
+
+})
+
+})
+
+}
+
+
+})
+
+
+
+
+
+
+
+
+app.get('/hjsontojson',(req,res) => {
+
+res.render('hjsontojson',{title:'FREE HJSON File to JSON Online Converter Tool - Online HJSON File to JSON File Converter Tool - FreeMediaTools.com'})
+
+})
+
+
+const hjsontojsonFilter = function (req, file, callback) {
+  var ext = path.extname(file.originalname);
+  if (
+    ext !== ".hjson"
+  ) {
+    return callback("This Extension is not supported");
+  }
+  callback(null, true);
+};
+
+
+var hjsontojsonlatestupload = multer({
+  storage: storage,
+  fileFilter: hjsontojsonFilter
+});
+
+app.post('/hjsontojson',hjsontojsonlatestupload.single('file'),(req,res) => {
+
+var outputpath = Date.now() + "output.json"
+
+if(req.file){
+
+
+
+exec(`any-json convert ${req.file.path} ${outputpath}`,(err,stdout,stderr) => {
+
+if(err){
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(outputpath)
+res.send(err)
+}
+
+res.download(outputpath,(err) => {
+
+if(err){
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(outputpath)
+res.send("Unable to download the file")
+}
+
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(outputpath)
+
+})
+
+})
+
+}
+
+
+})
+
+
+
+
+
+
+
+app.get('/initojson',(req,res) => {
+
+res.render('initojson',{title:'FREE INI Configuration File to JSON Online Converter Tool - Online INI Configuration File to JSON File Converter Tool - FreeMediaTools.com'})
+
+})
+
+
+const initojsonFilter = function (req, file, callback) {
+  var ext = path.extname(file.originalname);
+  if (
+    ext !== ".ini"
+  ) {
+    return callback("This Extension is not supported");
+  }
+  callback(null, true);
+};
+
+
+var initojsonlatestupload = multer({
+  storage: storage,
+  fileFilter: initojsonFilter
+});
+
+app.post('/initojson',initojsonlatestupload.single('file'),(req,res) => {
+
+var outputpath = Date.now() + "output.json"
+
+if(req.file){
+
+
+
+exec(`any-json convert ${req.file.path} ${outputpath}`,(err,stdout,stderr) => {
+
+if(err){
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(outputpath)
+res.send(err)
+}
+
+res.download(outputpath,(err) => {
+
+if(err){
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(outputpath)
+res.send("Unable to download the file")
+}
+
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(outputpath)
+
+})
+
+})
+
+}
+
+
+})
+
+
+
+
+
+
+
+
+
+app.get('/jsontoini',(req,res) => {
+
+res.render('jsontoini',{title:'FREE JSON File to INI Configuration Online Converter Tool - Online JSON File to INI Configuration File Converter Tool - FreeMediaTools.com'})
+
+})
+
+
+
+
+var jsonupload = multer({
+  storage: storage,
+  fileFilter: jsonFilter
+});
+
+app.post('/jsontoini',jsonupload.single('file'),(req,res) => {
+
+var outputpath = Date.now() + "output.ini"
+var inputfile = Date.now() + "input.json"
+
+if(req.file){
+
+var jsonarray = []
+
+jsonarray.push(JSON.parse(fs.readFileSync(req.file.path)))
+
+console.log(fs.readFileSync(req.file.path))
+
+console.log(jsonarray)
+
+fs.writeFileSync(inputfile,JSON.stringify(jsonarray))
+
+exec(`any-json convert ${inputfile} ${outputpath}`,(err,stdout,stderr) => {
+
+if(err){
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(inputfile)
+fs.unlinkSync(outputpath)
+res.send(err)
+}
+
+res.download(outputpath,(err) => {
+
+if(err){
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(inputfile)
+fs.unlinkSync(outputpath)
+res.send("Unable to download the file")
+}
+
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(inputfile)
+fs.unlinkSync(outputpath)
+
+})
+
+})
+
+}
+
+
+})
+
+
+
+
+
+
+
+
+
+
+app.get('/pptxtojson',(req,res) => {
+
+res.render('pptxtojson',{title:'FREE PPTX|PPT Powerpoint File to JSON Online Converter Tool - Online PPT|PPTX to JSON File Converter Tool - FreeMediaTools.com'})
+
+})
+
+
+const pptxtopdfFilter = function (req, file, callback) {
+  var ext = path.extname(file.originalname);
+  if (
+    ext !== ".ppt" && ext !== ".pptx"
+  ) {
+    return callback("This Extension is not supported");
+  }
+  callback(null, true);
+};
+const PPTX2Json = require('pptx2json');
+
+var pptxtopdflatestupload = multer({
+  storage: storage,
+  fileFilter: pptxtopdfFilter
+});
+
+app.post('/pptxtojson',pptxtopdflatestupload.single('file'),async(req,res) => {
+
+var outputfilepath = Date.now() + "output.json"
+
+
+if(req.file){
+
+
+const pptx2json = new PPTX2Json();
+ 
+const json = await pptx2json.toJson(req.file.path);
+
+fs.writeFileSync(outputfilepath,JSON.stringify(json))
+
+res.download(outputfilepath,(err) => {
+
+if(err){
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(outputfilepath)
+res.send(err)
+}
+
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(outputfilepath)
+
+
+})
+
+
+}
+
+
+})
+
+
+app.get('/removeemptylines',(req,res) => {
+
+res.render('removeemptylines',{title:'FREE Empty Lines Remover From String or Text - Online Blank Lines Spaces Remover From String Lines - FreeMediaTools.com'})
+
+})
+
+
+app.get('/removeextraspaces',(req,res) => {
+
+res.render('removeextraspaces',{title:'FREE Extra Spaces Remover From String or Text - Online Extra WhiteSpaces Remover From String Lines - FreeMediaTools.com'})
+
+})
+
+const removeDuplicateLines = require('remove-duplicate-lines');
+
+app.get('/removeduplicatelines',(req,res) => {
+
+res.render('removeduplicatelines',{title:'FREE Extra Duplicate Lines Remover From String or Text Tool - Online Extra Duplicate Lines Remover From String Lines - FreeMediaTools.com',text:''})
+
+})
+
+app.post('/removeduplicatelines',(req,res) => {
+
+removeDuplicateLines(req.body.inputtext,{ unique: true })
+    .then(output => {
+      
+	  res.render('removeduplicatelines',{title:'FREE Extra Duplicate Lines Remover From String or Text Tool - Online Extra Duplicate Lines Remover From String Lines - FreeMediaTools.com',text:output})	
+     
+  
+
+})
+    .catch(error => console.log(error))
+
+
+})
+
+
+var verify = require('bulk-email-verifier');
+
+
+app.get('/domainchecker',(req,res) => {
+
+res.render('domainchecker',{title:'FREE Website Domain Checker Online Tool - Online Domain Checker Tool - FreeMediaTools.com',text:""})
+
+})
+
+app.get('/emailchecker',(req,res) => {
+
+res.render('emailchecker',{title:'FREE Email Address Vaildate Checker Online Tool - Online Email Address Validate Checker - FreeMediaTools.com',text:''})
+
+})
+
+app.post('/domainchecker',(req,res) => {
+
+
+
+var domains = []
+domains.push(req.body.domain)
+
+
+verify.verifyDomainsMX(domains).then(function(response) {
+    console.log('Domains Status: ', response);
+	if(response.verified.length>0){
+	  res.render('domainchecker',{title:'FREE Website Domain Checker Online Tool - Online Domain Checker Tool - FreeMediaTools.com',text:"You entered a valid domain"})	
+        }
+        else{
+         res.render('domainchecker',{title:'FREE Website Domain Checker Online Tool - Online Domain Checker Tool - FreeMediaTools.com',text:"You entered a invalid domain"})
+        }
+    
+});
+
+
+
+})
+
+
+
+
+app.post('/emailchecker',(req,res) => {
+
+
+
+var domains = []
+domains.push(req.body.email)
+
+
+verify.verifyEmails("gmail.com",domains,{},function(err,response) {
+    console.log('Domains Status: ', response);
+	if(response.verified.length>0){
+	  res.render('emailchecker',{title:'FREE Email Address Vaildate Checker Online Tool - Online Email Address Validate Checker - FreeMediaTools.com',text:"You entered a valid email"})	
+        }
+        else{
+         res.render('emailchecker',{title:'FREE Email Address Vaildate Checker Online Tool - Online Email Address Validate Checker - FreeMediaTools.com',text:"You entered a invalid email"})
+        }
+
+
+
+})
+})
+
+app.get('/youtubetomp3',(req,res) =>{
+
+res.redirect('https://yt2mp3downloader.com')
+
+})
+
+app.get('/facebookvideodownload',(req,res) =>{
+
+res.redirect('https://ytmedia.in/facebookDownloader')
+
+})
+
+app.get('/youtubetomp4',(req,res) =>{
+
+res.redirect('https://ytmedia.in/youtubeDownloader')
+
+})
+
+app.get('/instaimagedownload',(req,res) =>{
+
+res.redirect('https://ytmedia.in/instaDownloader')
+
+})
+
+
+app.get('/instavideodownload',(req,res) =>{
+
+res.redirect('https://ytmedia.in/instaVideoDownloader')
+
+})
+
+app.get('/youtubethumbnaildownload',(req,res) =>{
+
+res.redirect('https://ytubethumbnaildownloader.com/')
+
+})
+
+app.get('/twittervideodownload',(req,res) =>{
+
+res.redirect('https://ytmedia.in/twitterDownloader')
+
+})
+
+app.get('/instagramFontGenerator',(req,res) =>{
+
+res.sendFile(__dirname + "/instagramFontGenerator.html")
+
+})
+
+app.get('/decimaltobinary',(req,res) =>{
+
+
+res.render('decimaltobinary',{title:'FREE Decimal to Binary Online Converter Tool - Online Decimal Number to Binary Digits - FreeMediaTools.com'})
+
+})
+
+
+app.get('/decimaltooctal',(req,res) =>{
+
+
+res.render('decimaltooctal',{title:'FREE Decimal to Octal Online Converter Tool - Online Decimal Number to Octal Digits - FreeMediaTools.com'})
+
+})
+
+
+app.get('/decimaltohexadecimal',(req,res) =>{
+
+
+res.render('decimaltohexadecimal',{title:'FREE Decimal to Hexadecimal Online Converter Tool - Online Decimal Number to Hexadecimal Digits - FreeMediaTools.com'})
+
+})
+
+
+app.get('/octaltodecimal',(req,res) =>{
+
+
+res.render('octaltodecimal',{title:'FREE Octal to Decimal Online Converter Tool - Online Octal Number to Decimal Digits - FreeMediaTools.com'})
+
+})
+
+
+
+app.get('/octaltobinary',(req,res) =>{
+
+
+res.render('octaltobinary',{title:'FREE Octal to Binary Online Converter Tool - Online Octal Number to Binary Digits - FreeMediaTools.com'})
+
+})
+
+
+
+app.get('/octaltohexadecimal',(req,res) =>{
+
+
+res.render('octaltohexadecimal',{title:'FREE Octal to Hexadecimal Online Converter Tool - Online Octal Number to Hexadecimal Digits - FreeMediaTools.com'})
+
+})
+
+
+app.get('/hexadecimaltobinary',(req,res) =>{
+
+
+res.render('hexadecimaltobinary',{title:'FREE Hexadecimal to Binary Online Converter Tool - Online Hexadecimal Number to Binary Digits - FreeMediaTools.com'})
+
+})
+
+
+app.get('/hexadecimaltooctal',(req,res) =>{
+
+
+res.render('hexadecimaltooctal',{title:'FREE Hexadecimal to Octal Online Converter Tool - Online Hexadecimal Number to Octal Digits - FreeMediaTools.com'})
+
+})
+
+
+app.get('/hexadecimaltodecimal',(req,res) =>{
+
+
+res.render('hexadecimaltodecimal',{title:'FREE Hexadecimal to Decimal Online Converter Tool - Online Hexadecimal Number to Decimal Digits - FreeMediaTools.com'})
+
+})
+
+app.get('/binarytooctal',(req,res) =>{
+
+
+res.render('binarytooctal',{title:'FREE Binary to Octal Online Converter Tool - Online Binary Number to Octal Digits - FreeMediaTools.com'})
+
+})
+
+app.get('/binarytodecimal',(req,res) =>{
+
+
+res.render('binarytodecimal',{title:'FREE Binary to Decimal Online Converter Tool - Online Binary Number to Decimal Digits - FreeMediaTools.com'})
+
+})
+
+
+app.get('/binarytohexadecimal',(req,res) =>{
+
+
+res.render('binarytohexadecimal',{title:'FREE Binary to Hexadecimal Online Converter Tool - Online Binary Number to Hexadecimal Digits - FreeMediaTools.com'})
+
+})
+
+app.get('/binarytoascii',(req,res) =>{
+
+
+res.render('binarytoascii',{title:'FREE Binary to ASCII Online Converter Tool - Online Binary Number to ASCII Digits - FreeMediaTools.com'})
+
+})
+
+app.get('/asciitobinary',(req,res) =>{
+
+
+res.render('asciitobinary',{title:'FREE ASCII to Binary Online Converter Tool - Online ASCII to Binary Digits - FreeMediaTools.com'})
+
+})
+
+
+app.get('/findandreplacetext',(req,res) =>{
+
+
+res.render('findandreplacetext',{title:'FREE Find and Replace Text Online Tool - Online Replace all occurences in String - FreeMediaTools.com'})
+
+})
+
+app.get('/texttodecimal',(req,res) =>{
+
+
+res.render('texttodecimal',{title:'FREE Text to ASCII Code Decimal Converter Online Tool - Online String to ASCII Code Decimal Value Converter - FreeMediaTools.com'})
+
+})
+
+app.get('/decimaltotext',(req,res) =>{
+
+
+res.render('decimaltotext',{title:'FREE Decimal or ASCII Code to Text Converter Online Tool - Online Decimal or ASCII Code to Text Converter - FreeMediaTools.com'})
+
+})
+
+app.get('/jsonstringify',(req,res) =>{
+
+
+res.render('jsonstringify',{title:'FREE JSON Stringify Online Tool - Online Text to JSON Stringify Converter - FreeMediaTools.com'})
+
+})
+
+app.get('/splittext',(req,res) =>{
+
+
+res.render('splittext',{title:'FREE Split Text with Space,Comma,Dash and Custom Characters Online - Online Text Splitter in New Lines Converter - FreeMediaTools.com'})
+
+})
+
+app.get('/repeattext',(req,res) =>{
+
+
+res.render('repeattext',{title:'FREE Text Repeater Generator Online Tool - Repeat Text Multiple Times Online Tool Generator - FreeMediaTools.com'})
+
+})
+
+
+app.get('/countwords',(req,res) =>{
+
+
+res.render('countwords',{title:'FREE Text Words Counter Tool Online - Online Character and Word Count Tool - FreeMediaTools.com'})
+
+})
+
+app.get('/reversetext',(req,res) =>{
+
+
+res.render('reversetext',{title:'FREE Reverse Text Generator in Backwards Direction - Spell Words in Backward or Reverse Order - FreeMediaTools.com'})
+
+})
+
+
+app.get('/addnumberlines',(req,res) =>{
+
+
+res.render('addlinenumbers',{title:'FREE Add Line Numbers to Text Online Tool - Add Line Numbers to Text or String Online - FreeMediaTools.com'})
+
+})
+
+
+app.get('/extracttextfromhtml',(req,res) =>{
+
+
+res.render('extracttextfromhtml',{title:'FREE Extract Text From HTML Code Online Tool - Split out Text From HTML Program Code Online - FreeMediaTools.com'})
+
+})
+
+
+app.get('/encryptdecrypttext',(req,res) =>{
+
+
+res.render('encryptdecrypttext',{title:'FREE Encrypt/Decrypt Text or String with Password Online Tool Using CryptoJS AES Encryption & Decryption Library - FreeMediaTools.com'})
+
+})
+
+app.get('/bulkdomainchecker',(req,res) =>{
+
+
+res.render('bulkdomainchecker',{title:'FREE Bulk Domain Name or Website Validator Checker Online Tool - Free Bulk Domain Validator or Validation Checker Tool - FreeMediaTools.com',text:'',flag:false})
+
+})
+
+
+app.post('/bulkdomainchecker',(req,res) => {
+
+var domains = req.body.domain
+console.log(domains)
+
+var lines = domains.split(/\n/);
+  var output = [];
+  var outputText = [];
+  for (var i = 0; i < lines.length; i++) {
+    // only push this line if it contains a non whitespace character.
+    if (/\S/.test(lines[i])) {
+      outputText.push('"' + lines[i].trim() + '"');
+      output.push(lines[i].trim());
+    }
+  }
+  console.log(output);
+
+
+verify.verifyDomainsMX(output).then(function(response) {
+    console.log('Domains Status: ', response);
+    res.render('bulkdomainchecker',{title:'FREE Bulk Domain Name or Website Validator Checker Online Tool - Free Bulk Domain Validator or Validation Checker Tool - FreeMediaTools.com',text:response,flag:true})
+});
+
+
+})
+
+
+
+
+
+app.get('/bulkemailchecker',(req,res) =>{
+
+
+res.render('bulkemailchecker',{title:'FREE Bulk Email Address Validator or Checker Tool Online - Free Bulk Email Address Validator or Checker Tool Online - FreeMediaTools.com',text:'',flag:false})
+
+})
+
+
+app.post('/bulkemailchecker',(req,res) => {
+
+var domains = req.body.domain
+var provider = req.body.provider
+console.log(domains)
+
+var lines = domains.split(/\n/);
+  var output = [];
+  var outputText = [];
+  for (var i = 0; i < lines.length; i++) {
+    // only push this line if it contains a non whitespace character.
+    if (/\S/.test(lines[i])) {
+      outputText.push('"' + lines[i].trim() + '"');
+      output.push(lines[i].trim());
+    }
+  }
+  console.log(output);
+
+
+verify.verifyEmails(provider,output,{},function(err,response) {
+    console.log('Domains Status: ', response);
+    res.render('bulkemailchecker',{title:'FREE Bulk Email Address Validator or Checker Tool Online - Free Bulk Email Address Validator or Checker Tool Online - FreeMediaTools.com',text:response,flag:true})
+});
+
+
+})
+
+app.get('/convertlinkstohtmlhyperlinks',(req,res) =>{
+
+res.render('convertlinkstohtmlhyperlinks',{title:'FREE URLs Website Links to HTML Hyperlinks Tool Online - URLs Website Links to HTML Anchor Tags Links - FreeMediaTools.com'})
+
+
+})
+
+app.get('/iframegenerator',(req,res) => {
+
+res.render('iframegenerator',{title:'FREE IFrame Generator to embed Websites and generate HTML Code Online Tool - URL IFrame Generator to generate HTML Code Online - FreeMediaTools.com'})
+
+})
+
+app.get('/youtubevideotimestampgenerator',(req,res) => {
+
+res.render('youtubevideotimestampgenerator',{title:'FREE Youtube Video Timestamp Link Generator Online Tool - Generate Timestamp Links for Youtube Videos - FreeMediaTools.com'})
+
+})
+
+app.get('/youtubevideoid',(req,res) => {
+
+res.render('youtubevideoid',{title:'FREE Youtube Video ID Extractor From Youtube Video URL Online Tool - Extract Youtube Video ID From Youtube Video URL Online - FreeMediaTools.com'})
+
+})
+
+app.get('/youtubetagfinder',(req,res) => {
+
+res.render('youtubetagfinder',{title:'FREE Youtube Video Tag Finder Extractor and Generator Online Tool - Extract Youtube Video Tags From Video URL Online - FreeMediaTools.com',tags:''})
+
+})
+
+app.post('/youtubetagfinder',(req,res) =>{
+
+ var url = req.body.url
+
+ console.log(url)
+ 
+ var dataToSend;
+ // spawn new child process to call the python script
+ const python = spawn('python3', ['script.py',url]);
+ // collect data from script
+ python.stdout.on('data', function (data) {
+  console.log('Pipe data from python script ...');
+  dataToSend = data.toString();
+ });
+ // in close event we are sure that stream from child process is closed
+ python.on('close', (code) => {
+ console.log(`child process close all stdio with code ${code}`);
+ // send data to browser
+ res.render('youtubetagfinder',{title:'FREE Youtube Video Tag Finder Extractor and Generator Online Tool - Extract Youtube Video Tags From Video URL Online - FreeMediaTools.com',tags:dataToSend})
+ });
+
+
+
+})
+
+
+var minify = require('html-minifier').minify;
+
+
+app.get('/minifyrawhtml',(req,res) => {
+
+res.render('rawhtmlminifier',{title:'FREE Raw HTML Compressor or Minify HTML Online Tool - FREE HTML Minifier to minify or compress HTML Source Code Online - FreeMediaTools.com',result:''})
+
+})
+
+var Minimize = require('minimize')
+  , minimize = new Minimize();
+
+app.post('/minifyrawhtml',(req,res) => {
+
+var html = req.body.html
+
+minimize.parse(html, function (error, data) {
+  console.log(data);
+res.render('rawhtmlminifier',{title:'FREE Raw HTML Compressor or Minify HTML Online Tool - FREE HTML Minifier to minify or compress HTML Source Code Online - FreeMediaTools.com',result:data})
+
+});
+
+
+})
+
+
+app.get('/minifyhtmlfile',(req,res) => {
+
+res.render('htmlfileminifier',{title:'FREE HTML Files Compressor or Minify HTML Files Online Tool - FREE HTML Minifier to minify or compress HTML Files Source Code Online - FreeMediaTools.com'})
+
+})
+
+app.get('/pdftodocx',(req,res) => {
+
+res.render('pdftodocx',{title:'FREE PDF to DOCX Word Document Converter Online Tool - PDF Document to Docx Word Document Converter Online - FreeMediaTools.com'})
+
+})
+
+const pdftodocxfilter = function (req, file, callback) {
+  var ext = path.extname(file.originalname);
+  if (
+    ext !== ".pdf"
+  ) {
+    return callback("This Extension is not supported");
+  }
+  callback(null, true);
+};
+
+var pdftodocxstorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public/uploads");
+  },
+  filename: function (req, file, cb) {
+    cb(
+      null,
+      file.originalname
+    );
+  },
+});
+
+var pdftodocxupload = multer({ storage: pdftodocxstorage,fileFilter: pdftodocxfilter });
+
+app.post('/pdftodocx',pdftodocxupload.single('file'),(req,res) => {
+
+if(req.file){
+
+var pdf = req.file.path
+console.log(pdf)
+
+
+var basename = path.basename(req.file.path)
+
+basename = sanitize(basename)
+
+console.log(basename)
+ 
+var htmlpath = `${basename.substr(0, basename.lastIndexOf("."))}.html`
+
+htmlpath = sanitize(htmlpath)
+console.log(htmlpath)
+
+var docxpath = `${basename.substr(0, basename.lastIndexOf("."))}.docx`
+
+docxpath = sanitize(docxpath)
+
+console.log(docxpath)
+
+exec(`soffice --convert-to html ${pdf}`,(err,stdout,stderr) => {
+
+if(err){
+fs.unlinkSync(pdf)
+fs.unlinkSync(htmlpath)
+fs.unlinkSync(docxpath)
+res.send(err)
+}
+
+console.log(htmlpath)
+
+
+
+exec(`soffice --convert-to docx:'MS Word 2007 XML' ${htmlpath}`,(err,stdout,stderr) => {
+
+if(err){
+fs.unlinkSync(pdf)
+fs.unlinkSync(htmlpath)
+fs.unlinkSync(docxpath)
+res.send(err)
+}
+console.log("output converted")
+console.log(docxpath)
+res.download(docxpath,(err) => {
+
+if(err){
+fs.unlinkSync(pdf)
+fs.unlinkSync(htmlpath)
+fs.unlinkSync(docxpath)
+res.send(err)
+
+}
+
+fs.unlinkSync(pdf)
+fs.unlinkSync(htmlpath)
+fs.unlinkSync(docxpath)
+
+
+})
+
+})
+
+})
+ 
+}
+
+})
+
+
+
+
+app.get('/pdftohtml',(req,res) => {
+
+res.render('pdftohtml',{title:'FREE PDF to HTML Document Converter Online Tool - PDF Document to HTML Document Converter Online - FreeMediaTools.com'})
+
+})
+
+app.get('/cropvideo',(req,res) => {
+
+res.render('cropvideo',{title:'FREE Crop Video or Cut Portion of Video Online Tool - Video Cropping Or Cutter Online Tool - FreeMediaTools.com'})
+
+})
+
+app.post('/cropvideo',videotomp3upload.single('file'),(req,res) => {
+
+
+if(req.file){
+
+var outputfile = Date.now() + "output." + path.extname(req.file.originalname);
+
+var starttime = req.body.start
+
+var endtime = req.body.end
+
+exec(`ffmpeg -i ${req.file.path} -ss ${starttime} -to ${endtime} -c copy ${outputfile}`,(err,stdout,stderr) =>{
+
+if(err){
+
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(outputfile)
+res.send("Unable to crop video")
+
+}
+
+res.download(outputfile,(err) =>{
+
+if(err) {
+
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(outputfile)
+res.send("Unable to download the file")
+
+}
+
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(outputfile)
+
+})
+
+
+
+})
+
+}
+
+})
+
+
+
+app.get('/cropaudio',(req,res) => {
+
+res.render('cropaudio',{title:'FREE Crop Audio or Cut Portion of Audio Online Tool - Audio Cropping Or Cutter Online Tool - FreeMediaTools.com'})
+
+})
+
+app.post('/cropaudio',audioconverter.single('file'),(req,res) => {
+
+
+if(req.file){
+
+var outputfile = Date.now() + "output." + path.extname(req.file.originalname);
+
+var starttime = req.body.start
+
+var endtime = req.body.end
+
+exec(`ffmpeg -i ${req.file.path} -ss ${starttime} -to ${endtime} -c copy ${outputfile}`,(err,stdout,stderr) =>{
+
+if(err){
+
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(outputfile)
+res.send("Unable to crop video")
+
+}
+
+res.download(outputfile,(err) =>{
+
+if(err) {
+
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(outputfile)
+res.send("Unable to download the file")
+
+}
+
+fs.unlinkSync(req.file.path)
+fs.unlinkSync(outputfile)
+
+})
+
+
+
+})
+
+}
+
+})
+
+
+
+const pdftohtmlfilter = function (req, file, callback) {
+  var ext = path.extname(file.originalname);
+  if (
+    ext !== ".pdf"
+  ) {
+    return callback("This Extension is not supported");
+  }
+  callback(null, true);
+};
+
+var pdftohtmlstorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public/uploads");
+  },
+  filename: function (req, file, cb) {
+    cb(
+      null,
+      file.originalname
+    );
+  },
+});
+
+var pdftohtmlupload = multer({ storage: pdftohtmlstorage,fileFilter: pdftohtmlfilter });
+
+app.post('/pdftohtml',pdftohtmlupload.single('file'),(req,res) => {
+
+if(req.file){
+
+var pdf = req.file.path
+console.log(pdf)
+
+var basename = path.basename(req.file.path)
+
+console.log(basename)
+ 
+var htmlpath = `${basename.substr(0, basename.lastIndexOf("."))}.html`
+
+console.log(htmlpath)
+
+exec(`soffice --convert-to html ${pdf}`,(err,stdout,stderr) => {
+
+if(err){
+fs.unlinkSync(pdf)
+fs.unlinkSync(htmlpath)
+res.send(err)
+}
+
+console.log(htmlpath)
+
+res.download(htmlpath,(err) =>{
+
+
+if(err){
+
+fs.unlinkSync(pdf)
+fs.unlinkSync(htmlpath)
+
+}
+
+fs.unlinkSync(pdf)
+fs.unlinkSync(htmlpath)
+
+})
+
+
+})
+ 
+}
+
+})
+
+
+app.get('/txttodoc',(req,res) => {
+
+res.render('txttodoc',{title:'FREE TXT Text File to Word DOC File Converter Online Tool - Text to DOC Files Easy Converter Online Tool - FreeMediaTools.com'})
+
+})
+
+app.get('/doctotxt',(req,res) => {
+
+res.render('doctotxt',{title:'FREE Word DOC to TXT Text File Converter Online Tool - Word DOC to TXT Files Easy Converter Online Tool - FreeMediaTools.com'})
+
+})
+
+app.get('/txttopdf',(req,res) => {
+
+res.render('txttopdf',{title:'FREE TXT Text File to PDF File Converter Online Tool - Text to PDF Files Easy Converter Online Tool - FreeMediaTools.com'})
+
+})
+
+const txttodocfilter = function (req, file, callback) {
+  var ext = path.extname(file.originalname);
+  if (
+    ext !== ".txt"
+  ) {
+    return callback("This Extension is not supported");
+  }
+  callback(null, true);
+};
+
+var txttodocupload = multer({ storage: storage,limits:{fileSize:maxSize},fileFilter: txttodocfilter });
+
+app.post('/txttodoc',txttodocupload.single('file'),(req,res) => {
+
+if(req.file){
+
+var file = req.file.path
+
+var output = Date.now() + "output.doc"
+
+var txt = fs.readFileSync(file)
+
+fs.writeFileSync(output,txt)
+
+res.download(output,(err) => {
+
+if(err){
+
+fs.unlinkSync(file)
+fs.unlinkSync(output)
+res.send("Unable to download the file")
+}
+
+fs.unlinkSync(file)
+fs.unlinkSync(output)
+
+})
+
+}
+
+})
+
+
+const doctotxtfilter = function (req, file, callback) {
+  var ext = path.extname(file.originalname);
+  if (
+    ext !== ".doc" && ext !== ".docx"
+  ) {
+    return callback("This Extension is not supported");
+  }
+  callback(null, true);
+};
+
+var doctotxtupload = multer({ storage: storage,limits:{fileSize:maxSize},fileFilter: doctotxtfilter });
+
+app.post('/doctotxt',doctotxtupload.single('file'),(req,res) => {
+
+if(req.file){
+
+var file = req.file.path
+
+var output = Date.now() + "output.txt"
+
+var txt = fs.readFileSync(file)
+
+fs.writeFileSync(output,txt)
+
+res.download(output,(err) => {
+
+if(err){
+
+fs.unlinkSync(file)
+fs.unlinkSync(output)
+res.send("Unable to download the file")
+}
+
+fs.unlinkSync(file)
+fs.unlinkSync(output)
+
+})
+
+}
+
+})
+
+app.get('/pdftotext',(req,res) => {
+
+res.render('pdftotext',{title:'FREE PDF to Text or Extract Text From PDF Online Tool - PDF to Text File Converter Tool - FreeMediaTools.com'})
+
+})
+
+app.post('/pdftotext',pdfconverterupload.single('file'),(req,res) =>{
+
+if(req.file){
+
+var outputfile = Date.now() + "output.txt"
+
+extract(req.file.path, { splitPages: false }, function (err, text) {
+  if (err) {
+    console.dir(err)
+    return
+  }
+  console.dir(text)
+
+  fs.writeFileSync(outputfile,text)
+
+  
+  res.download(outputfile,(err) => {
+
+     if(err) {
+       
+      fs.unlinkSync(outputfile)
+      fs.unlinkSync(req.file.path)
+      res.send("Unable to download the file")
+        
+     }
+     
+     fs.unlinkSync(outputfile)
+     fs.unlinkSync(req.file.path)
+
+  }) 
+ 
+})
+
+}
+
+})
+
+app.get('/cricketstats',(req,res) => {
+
+res.render('cricketstats',{title:'FREE Cricket Statistics For Test ODI T20I and IPL Online Web App of World Cricketers of ICC Teams - FreeMediaTools.com'})
+
+})
+
+app.post('/getplayernames',(req,res) => {
+    console.log(req.body.input)
+
+    cricData.getMatchingPlayerNames(req.body.input).then((response)=>
+    {
+        console.log(JSON.stringify(response));
+
+        res.json({
+            names:response
+        })
+    })
+    
+})
+
+app.post('/getplayerinfo',(req,res) =>{
+    console.log(req.body.playername)
+
+    cricData.getPlayerInfoByName(req.body.playername).then((response=>{
+ 
+        console.log(JSON.stringify(response));
+
+    
+
+        res.json({
+            info:response
+        })
+         
+        }))
+        .catch((err) =>{
+            console.log(err)
+            res.json({
+                info:"Player not found"
+            })
+        });
+})
+
+app.get('/karaokemaker',(req,res) => {
+
+res.render('karaokemaker',{title:'FREE Karaoke MP3 Song Maker | Extract Vocals From Mp3 Song Online - FreeMediaTools.com'})
+
+})
+
+var audioconverter3 = multer({ storage: storage, fileFilter: audioFilter }).single('file');
+
+app.post(
+      "/karaokemaker",
+      (req, res) => {
+          console.log(req.body.path);
+    
+   
+    
+          outputFilePath = Date.now() + "output." + path.extname(req.body.path);
+    
+          exec(
+            `ffmpeg -i ${req.body.path} -preset ultrafast -af pan="stereo|c0=c0|c1=-1*c1" -ac 1 ${outputFilePath}`,
+            (err, stdout,stderr) => {
+              if(err){
+                res.json({
+                    error:"some error takes place"
+                })
+            }
+            res.json({
+                path:outputFilePath
+            })
+      })
+        
+      })
+    
+      app.post('/uploadkaraokemaker',(req,res) =>{
+        audioconverter3(req,res,function(err) {
+          if(err) {
+              return res.end("Error uploading file.");
+          }
+          res.json({
+              path:req.file.path
+          })
+      });
+      })
+
+
+
+
+app.get('/karaokemaker',(req,res) => {
+
+res.render('karaokemaker',{title:'FREE Karaoke MP3 Song Maker | Extract Vocals From Mp3 Song Online - FreeMediaTools.com'})
+
+})
 
 
 

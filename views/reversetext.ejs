@@ -1,0 +1,58 @@
+<%-include('./partials/head'); %>
+  <body>
+    <%-include('./partials/navbar'); %>
+      <div class="container">
+          <h1 class="text-center">
+              Count Words Online
+          </h1>
+            <div class="form-group">
+		<label for="input">Input Text:</label>
+                <textarea type="text" cols="20" rows="10" class="form-control" placeholder="Enter Text" id="text" required></textarea>
+            </div>
+	    
+            <div class="form-group">
+                <button id="button" class="btn btn-block btn-danger">
+                    Reverse Text
+                </button>
+            </div>
+
+           <div class="form-group">
+		<label for="output">Reversed Text:</label>
+                <textarea type="text" cols="20" rows="10" class="form-control" placeholder="Output" id="code" required></textarea>
+            </div>
+	   
+        
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<script>
+var symbol = " "
+    $("#button").click(function () {
+   
+      $("#code").html(reverseString($("#text").val()))
+})
+
+function reverseString(str) {
+    // Step 1. Use the split() method to return a new array
+    var splitString = str.split(""); // var splitString = "hello".split("");
+    // ["h", "e", "l", "l", "o"]
+ 
+    // Step 2. Use the reverse() method to reverse the new created array
+    var reverseArray = splitString.reverse(); // var reverseArray = ["h", "e", "l", "l", "o"].reverse();
+    // ["o", "l", "l", "e", "h"]
+ 
+    // Step 3. Use the join() method to join all elements of the array into a string
+    var joinArray = reverseArray.join(""); // var joinArray = ["o", "l", "l", "e", "h"].join("");
+    // "olleh"
+    
+    //Step 4. Return the reversed string
+    return joinArray; // "olleh"
+}
+
+
+  </script>
+</html>

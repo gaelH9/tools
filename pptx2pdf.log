@@ -1,0 +1,273 @@
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . public/uploads/file-1604931439927.pptx
+pid: 19464
+convert /root/freemediatools/public/uploads/file-1604931439927.pptx -> /root/freemediatools//file-1604931439927.pdf using filter : impress_pdf_Export
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . sample.pptx
+pid: 19539
+convert /root/freemediatools/sample.pptx -> /root/freemediatools//sample.pdf using filter : impress_pdf_Export
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . sample.pptx
+pid: 19599
+convert /root/freemediatools/sample.pptx -> /root/freemediatools//sample.pdf using filter : impress_pdf_Export
+Overwriting: /root/freemediatools//sample.pdf
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . sample.pptx
+pid: 19661
+convert /root/freemediatools/sample.pptx -> /root/freemediatools//sample.pdf using filter : impress_pdf_Export
+Overwriting: /root/freemediatools//sample.pdf
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . sample.pptx
+pid: 19722
+convert /root/freemediatools/sample.pptx -> /root/freemediatools//sample.pdf using filter : impress_pdf_Export
+Overwriting: /root/freemediatools//sample.pdf
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . sample.pptx
+pid: 19777
+convert /root/freemediatools/sample.pptx -> /root/freemediatools//sample.pdf using filter : impress_pdf_Export
+Overwriting: /root/freemediatools//sample.pdf
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . sample.pptx
+pid: 19832
+convert /root/freemediatools/sample.pptx -> /root/freemediatools//sample.pdf using filter : impress_pdf_Export
+Overwriting: /root/freemediatools//sample.pdf
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . sample.pptx
+pid: 19889
+convert /root/freemediatools/sample.pptx -> /root/freemediatools//sample.pdf using filter : impress_pdf_Export
+Overwriting: /root/freemediatools//sample.pdf
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . sample.pptx
+pid: 19944
+convert /root/freemediatools/sample.pptx -> /root/freemediatools//sample.pdf using filter : impress_pdf_Export
+Overwriting: /root/freemediatools//sample.pdf
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . sample.pptx
+pid: 20006
+convert /root/freemediatools/sample.pptx -> /root/freemediatools//sample.pdf using filter : impress_pdf_Export
+Overwriting: /root/freemediatools//sample.pdf
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . public/uploads/file-1604932158328.pptx
+pid: 20487
+convert /root/freemediatools/public/uploads/file-1604932158328.pptx -> /root/freemediatools//file-1604932158328.pdf using filter : impress_pdf_Export
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . public/uploads/file-1604932370179.pptx
+pid: 20564
+convert /root/freemediatools/public/uploads/file-1604932370179.pptx -> /root/freemediatools//file-1604932370179.pdf using filter : impress_pdf_Export
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . public/uploads/file-1604932420423.pptx
+pid: 20820
+convert /root/freemediatools/public/uploads/file-1604932420423.pptx -> /root/freemediatools//file-1604932420423.pdf using filter : impress_pdf_Export
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . public/uploads/file-1604932515766.pptx
+pid: 21112
+convert /root/freemediatools/public/uploads/file-1604932515766.pptx -> /root/freemediatools//file-1604932515766.pdf using filter : impress_pdf_Export
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . public/uploads/file-1604932619194.pptx
+pid: 21400
+convert /root/freemediatools/public/uploads/file-1604932619194.pptx -> /root/freemediatools//file-1604932619194.pdf using filter : impress_pdf_Export
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . public/uploads/file-1604932648834.pptx
+pid: 21456
+convert /root/freemediatools/public/uploads/file-1604932648834.pptx -> /root/freemediatools//file-1604932648834.pdf using filter : impress_pdf_Export
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . public/uploads/file-1604932786691.pptx
+pid: 21727
+convert /root/freemediatools/public/uploads/file-1604932786691.pptx -> /root/freemediatools//file-1604932786691.pdf using filter : impress_pdf_Export
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . public/uploads/file-1604932807857.pptx
+pid: 21785
+convert /root/freemediatools/public/uploads/file-1604932807857.pptx -> /root/freemediatools//file-1604932807857.pdf using filter : impress_pdf_Export
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . public/uploads/file-1604932846460.pptx
+pid: 21841
+convert /root/freemediatools/public/uploads/file-1604932846460.pptx -> /root/freemediatools//file-1604932846460.pdf using filter : impress_pdf_Export
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . public/uploads/file-1604932925281.pptx
+pid: 21920
+convert /root/freemediatools/public/uploads/file-1604932925281.pptx -> /root/freemediatools//file-1604932925281.pdf using filter : impress_pdf_Export
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . public/uploads/file-1604932978176.pptx
+pid: 22013
+convert /root/freemediatools/public/uploads/file-1604932978176.pptx -> /root/freemediatools//file-1604932978176.pdf using filter : impress_pdf_Export
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . public/uploads/file-1604933081268.pptx
+pid: 22110
+convert /root/freemediatools/public/uploads/file-1604933081268.pptx -> /root/freemediatools//file-1604933081268.pdf using filter : impress_pdf_Export
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . public/uploads/file-1604933130814.pptx
+pid: 22166
+convert /root/freemediatools/public/uploads/file-1604933130814.pptx -> /root/freemediatools//file-1604933130814.pdf using filter : impress_pdf_Export
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . public/uploads/file-1604933206920.pptx
+pid: 22253
+convert /root/freemediatools/public/uploads/file-1604933206920.pptx -> /root/freemediatools//file-1604933206920.pdf using filter : impress_pdf_Export
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . public/uploads/file-1604933240762.pptx
+pid: 22309
+convert /root/freemediatools/public/uploads/file-1604933240762.pptx -> /root/freemediatools//file-1604933240762.pdf using filter : impress_pdf_Export
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . public/uploads/file-1604933295173.pptx
+pid: 22397
+convert /root/freemediatools/public/uploads/file-1604933295173.pptx -> /root/freemediatools//file-1604933295173.pdf using filter : impress_pdf_Export
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . public/uploads/file-1604933373355.pptx
+pid: 22455
+convert /root/freemediatools/public/uploads/file-1604933373355.pptx -> /root/freemediatools//file-1604933373355.pdf using filter : impress_pdf_Export
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . sample.pptx
+pid: 22510
+convert /root/freemediatools/sample.pptx -> /root/freemediatools//sample.pdf using filter : impress_pdf_Export
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . sample.pptx
+pid: 22565
+convert /root/freemediatools/sample.pptx -> /root/freemediatools//sample.pdf using filter : impress_pdf_Export
+Overwriting: /root/freemediatools//sample.pdf
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . sample.pptx
+pid: 22622
+convert /root/freemediatools/sample.pptx -> /root/freemediatools//sample.pdf using filter : impress_pdf_Export
+Overwriting: /root/freemediatools//sample.pdf
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . sample.pptx
+pid: 22677
+convert /root/freemediatools/sample.pptx -> /root/freemediatools//sample.pdf using filter : impress_pdf_Export
+Overwriting: /root/freemediatools//sample.pdf
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . sample.pptx
+pid: 22736
+convert /root/freemediatools/sample.pptx -> /root/freemediatools//sample.pdf using filter : impress_pdf_Export
+Overwriting: /root/freemediatools//sample.pdf
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . sample.pptx
+pid: 22791
+convert /root/freemediatools/sample.pptx -> /root/freemediatools//sample.pdf using filter : impress_pdf_Export
+Overwriting: /root/freemediatools//sample.pdf
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . sample.pptx
+pid: 22846
+convert /root/freemediatools/sample.pptx -> /root/freemediatools//sample.pdf using filter : impress_pdf_Export
+Overwriting: /root/freemediatools//sample.pdf
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . sample.pptx
+pid: 22901
+convert /root/freemediatools/sample.pptx -> /root/freemediatools//sample.pdf using filter : impress_pdf_Export
+Overwriting: /root/freemediatools//sample.pdf
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . sample.pptx
+pid: 22957
+convert /root/freemediatools/sample.pptx -> /root/freemediatools//sample.pdf using filter : impress_pdf_Export
+Overwriting: /root/freemediatools//sample.pdf
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . sample.pptx
+pid: 23107
+convert /root/freemediatools/sample.pptx -> /root/freemediatools//sample.pdf using filter : impress_pdf_Export
+/usr/bin/libreoffice status: SUCCESS
+
+command: convert -verbose -resize 1200 -density 200 ./sample.pdf ./sample.png
+pid: 23151
+convert status: ERROR
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . sample.pptx
+pid: 23175
+convert /root/freemediatools/sample.pptx -> /root/freemediatools//sample.pdf using filter : impress_pdf_Export
+Overwriting: /root/freemediatools//sample.pdf
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . sample.pptx
+pid: 23232
+convert /root/freemediatools/sample.pptx -> /root/freemediatools//sample.pdf using filter : impress_pdf_Export
+Overwriting: /root/freemediatools//sample.pdf
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . sample.pptx
+pid: 23287
+convert /root/freemediatools/sample.pptx -> /root/freemediatools//sample.pdf using filter : impress_pdf_Export
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . sample.pptx
+pid: 23342
+convert /root/freemediatools/sample.pptx -> /root/freemediatools//sample.pdf using filter : impress_pdf_Export
+Overwriting: /root/freemediatools//sample.pdf
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . public/uploads/file-1604934769843.pptx
+pid: 23458
+convert /root/freemediatools/public/uploads/file-1604934769843.pptx -> /root/freemediatools//file-1604934769843.pdf using filter : impress_pdf_Export
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . public/uploads/file-1604934791331.pptx
+pid: 23516
+convert /root/freemediatools/public/uploads/file-1604934791331.pptx -> /root/freemediatools//file-1604934791331.pdf using filter : impress_pdf_Export
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . public/uploads/file-1604935018574.pptx
+pid: 23607
+convert /root/freemediatools/public/uploads/file-1604935018574.pptx -> /root/freemediatools//file-1604935018574.pdf using filter : impress_pdf_Export
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . public/uploads/file-1604935026566.pptx
+pid: 23663
+convert /root/freemediatools/public/uploads/file-1604935026566.pptx -> /root/freemediatools//file-1604935026566.pdf using filter : impress_pdf_Export
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . public/uploads/file-1604935204529.pptx
+pid: 23934
+convert /root/freemediatools/public/uploads/file-1604935204529.pptx -> /root/freemediatools//file-1604935204529.pdf using filter : impress_pdf_Export
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . public/uploads/file-1604935671765.pptx
+pid: 24078
+convert /root/freemediatools/public/uploads/file-1604935671765.pptx -> /root/freemediatools//file-1604935671765.pdf using filter : impress_pdf_Export
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . public/uploads/file-1604935776208.pptx
+pid: 24167
+convert /root/freemediatools/public/uploads/file-1604935776208.pptx -> /root/freemediatools//file-1604935776208.pdf using filter : impress_pdf_Export
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . public/uploads/file-1604935900299.pptx
+pid: 24458
+convert /root/freemediatools/public/uploads/file-1604935900299.pptx -> /root/freemediatools//file-1604935900299.pdf using filter : impress_pdf_Export
+/usr/bin/libreoffice status: SUCCESS
+
+command: /usr/bin/libreoffice --headless --invisible --convert-to pdf --outdir . public/uploads/file-1604936829937.pptx
+pid: 24802
+convert /root/freemediatools/public/uploads/file-1604936829937.pptx -> /root/freemediatools//file-1604936829937.pdf using filter : impress_pdf_Export
+/usr/bin/libreoffice status: SUCCESS

@@ -1,0 +1,38 @@
+<%-include('./partials/head'); %>
+  <body>
+    <%-include('./partials/navbar'); %>
+      <div class="container">
+          <h1 class="text-center">
+              Binary to Hexadecimal Converter Online
+          </h1>
+            <div class="form-group">
+		<label for="binary">Binary No:</label>
+                <input type="text" class="form-control" placeholder="Enter Binary" id="input" required>
+            </div>
+            <div class="form-group">
+                <button id="button" class="btn btn-block btn-danger">
+                    Convert to Hexadecimal
+                </button>
+            </div>
+	    <div class="form-group">
+		<label for="string">Output:</label>
+                <input type="text" class="form-control" placeholder="Result" id="output"/>
+            </div>
+        
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+$("#button").click(function(){
+
+var input = parseInt($("#input").val(),2)
+
+$("#output").val(input.toString(16))
+
+
+})
+</script>
+</html>

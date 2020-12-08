@@ -1,0 +1,49 @@
+<%-include('./partials/head'); %>
+  <body>
+    <%-include('./partials/navbar'); %>
+      <div class="container">
+          <h1 class="text-center">
+              Text Repeater Generator Online
+          </h1>
+            <div class="form-group">
+		<label for="input">Input Text:</label>
+                <textarea type="text" cols="20" rows="10" class="form-control" placeholder="Enter Text" id="text" required></textarea>
+            </div>
+	    <div class="form-group">
+		<label for="times">No of Times Repeat:</label>
+		<input type="number" id="number" class="form-control" value="10" required/>
+	   </div>
+            <div class="form-group">
+                <button id="button" class="btn btn-block btn-danger">
+                    Repeat Text
+                </button>
+            </div>
+	    <div class="form-group">
+		<label for="string">Output:</label>
+                <textarea type="text" cols="20" rows="10" class="form-control" placeholder="Result" id="code"></textarea>
+            </div>
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<script>
+
+    $("#button").click(function () {
+      		
+      //$("#code").val("")      
+
+      var times = parseInt($("#number").val())
+      console.log(times)
+
+      console.log($("#text").val())
+
+      var text = $("#text").val()
+
+      $("#code").val(text.repeat(times))
+
+     })
+  </script>
+</html>

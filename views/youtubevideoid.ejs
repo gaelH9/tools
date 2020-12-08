@@ -1,0 +1,91 @@
+<%-include('./partials/head'); %>
+  <body>
+    <%-include('./partials/navbar'); %>
+      <div class="container">
+          <br>
+      <h1 class="text-center">Youtube Video ID Extractor Online</h1>
+      <div class="form-group">
+        <label for="youtubeurl">Youtube Video URL:</label>
+        <input
+          name=""
+          type="text"
+          id="url"
+          placeholder="https://www.youtube.com/watch?v=4hFFY5Uzazs"
+          required
+          class="form-control"
+        >
+      </div>
+
+      <div class="form-group">
+        <button id="button" class="btn btn-danger btn-block">
+          Get Youtube Video Id
+        </button>
+      </div>
+
+      <br><br>
+
+      <div id="result"></div>
+      <br><br>
+
+      
+      <div class="form-group">
+        <button id="copy" style="display:none" class="btn btn-primary btn-block">
+          Copy to Clipboard
+        </button>
+      </div>
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script>
+    var url = ""
+
+    $("#button").on('click',function(){
+      url = $("#url").val()
+
+      getyoutubevideoid(url)
+    })
+
+    $("#copy").on('click',function(){
+      copytoclipboard()
+    })
+
+    function getyoutubevideoid(url){
+       var id = youtube_parser(url)
+       $("#result").html(`<h1 class="text-center">${id}</h1>`)
+       $("#copy").show()
+    }
+
+    function youtube_parser(url){
+    var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+    var match = url.match(regExp);
+    return (match&&match[7].length==11)? match[7] : false;
+    
+}
+
+function copytoclipboard(){
+  var textToCopy = $("#result").text();
+
+var myTemporaryInputElement = document.createElement("input");
+myTemporaryInputElement.type = "text";
+myTemporaryInputElement.value = textToCopy;
+
+document.body.appendChild(myTemporaryInputElement);
+
+myTemporaryInputElement.select();
+document.execCommand("Copy");
+
+document.body.removeChild(myTemporaryInputElement);
+
+Swal.fire(
+  'Good job!',
+  'URL Successfully Copied',
+  'success'
+)
+}
+
+</script>
+</html>

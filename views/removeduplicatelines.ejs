@@ -1,0 +1,30 @@
+<%-include('./partials/head'); %>
+  <body>
+    <%-include('./partials/navbar'); %>
+      <div class="container">
+          <h1 class="text-center">
+              Remove Duplicate Lines Online
+          </h1>
+            <form method="post" action="/removeduplicatelines">
+            <div class="form-group">
+		<label for="string">Input Text:</label>
+                <textarea cols="20" rows="10" class="form-control" type="file" name="inputtext" placeholder="Enter Text" id="inputtextarea" required></textarea>
+            </div>
+            <div class="form-group">
+                <button id="button" class="btn btn-block btn-danger">
+                    Remove Duplicate Lines
+                </button>
+            </div>
+	    <div class="form-group">
+		<label for="string">Output Text:</label>
+                <textarea cols="20" rows="10" class="form-control" type="file" name="outputtext" placeholder="Output Text" id="outputtextarea"><%=text%></textarea>
+            </div>
+</form>
+        
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</html>

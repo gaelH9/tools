@@ -1,0 +1,96 @@
+<%-include('./partials/head'); %>
+  <body>
+    <%-include('./partials/navbar'); %>
+      <div class="container">
+          <h1 class="text-center">
+              Bulk Email Address Validator Checker Online
+          </h1>
+          <form action="/bulkemailchecker" method="post">
+            <div class="form-group">
+		<label for="emails">Bulk Emails:</label>
+                <textarea class="form-control" cols="20" rows="10" name="domain" placeholder="Enter Emails" id="inputtextarea" required></textarea>
+            </div>
+	    <div class="form-group">
+		<label for="provider">Select Email Provider:</label>
+		<select class="form-control" name="provider">
+		  <option value="gmail.com" selected>Gmail</option>
+	          <option value="yahoo.com">Yahoo</option>
+		  <option value="outlook.com">Outlook+Hotmail</option>
+                </select>
+	    </div>	
+            <div class="form-group">
+                <button id="button" class="btn btn-block btn-danger">
+                    Verify Emails
+                </button>
+            </div>
+	    
+</form>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Verified Emails</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%if(flag){%>
+     
+      <%for(var i=0; i<text.verified.length; i++) {%>
+        <tr>
+        <td><%=text.verified[i]%><td>
+        </tr>
+      <%}%>
+
+
+      
+     
+      <%}%>
+    </tbody>
+  </table>
+
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th>UnVerified Emails</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%if(flag){%>
+      
+      <%for(var i=0; i<text.unverified.length; i++) {%>
+        <tr>
+        <td><%=text.unverified[i]%></td>
+        </tr>
+      <%}%>
+      
+      <%}%>
+    </tbody>
+  </table>
+  
+
+        
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+/*<script>
+
+$("#button").click(function(){
+      var lines = $('#inputtextarea').val().split(/\n/);
+  var output = [];
+  var outputText = [];
+  for (var i = 0; i < lines.length; i++) {
+    // only push this line if it contains a non whitespace character.
+    if (/\S/.test(lines[i])) {
+      outputText.push('"' + $.trim(lines[i]) + '"');
+      output.push($.trim(lines[i]));
+    }
+  }
+  console.log(output);
+  
+     })
+
+</script>*/
+</html>

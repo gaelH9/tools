@@ -1,0 +1,46 @@
+<%-include('./partials/head'); %>
+  <body>
+    <%-include('./partials/navbar'); %>
+      <div class="container">
+          <h1 class="text-center">
+              Add Line Numbers to Text Online
+          </h1>
+            <div class="form-group">
+		<label for="input">Input Text:</label>
+                <textarea type="text" cols="20" rows="10" class="form-control" placeholder="Enter Text" id="text" required></textarea>
+            </div>
+	    
+            <div class="form-group">
+                <button id="button" class="btn btn-block btn-danger">
+                    Add Line Numbers
+                </button>
+            </div>
+
+           <div class="form-group">
+		<label for="output">Output Text:</label>
+                <textarea type="text" cols="20" rows="10" class="form-control" placeholder="Output" id="code" required></textarea>
+            </div>
+	   
+        
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<script>
+$("#button").click(function () {
+
+      var text = $("#text").val()
+
+      var numbered = text.split('\n').map((line, index) => `${index + 1}. ${line}`).join('\n')
+   
+      $("#code").html(numbered)
+})
+
+
+
+
+  </script>
+</html>
