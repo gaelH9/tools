@@ -1,0 +1,135 @@
+<%-include('./partials/head'); %>
+<body>
+  <%-include('./partials/navbar'); %>
+<style>
+  
+  h1, h2, h3 {
+    text-align: center;
+  }
+  
+  .header,
+  .instructions ol {
+    color: black;
+    margin-bottom: 50px;
+  }
+  
+  .main {
+    color: black;
+  }
+  
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .topText,
+  .bottomText {
+    font-family: Impact, sans-serif;
+    color: yellow;
+    text-shadow: #000 0px 0px 6px;
+    text-align: center;
+    font-size: 80px;
+  }
+  
+  .topText {
+    top: 100px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    position: absolute;
+  }
+  
+  .bottomText {
+    bottom: 100px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    position: absolute;
+  }
+  
+  .footer {
+    margin-top: 50px;
+    color: black;
+    text-align: left;
+  }
+</style>
+      <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Indie+Flower"/>
+
+      <div class="container">
+      <div class="header">
+      <div class="container">
+        <div class="col-md-12">
+          <h1>YouTube Video Thumbnail Generator</h1>
+        </div>
+      </div>
+    </div>
+    
+    <div class="instructions">
+      <div class="container">
+        <div class="col-md-12">
+          <ol>
+            <li>Choose an image from the web.</li>
+            <li>Type in the phrases.</li>
+            <li>Press the "PrtSc" button on your keyboard.</li>
+            <li>Open up Paint or some other image editor software.</li>
+            <li>Edit the picture so only the thumbnail remains.</li>
+            <li>Save the thumbnail.</li>
+            <li>Upload it as the thumbnail of your YouTube videos.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+    
+    <div class="main">
+      <div class="container">
+        <div class="col-md-6">
+          <img src="https://igx.4sqi.net/img/general/original/52051383_W3z9wDAqKFYXsy6MxLdZA_juEm-4KDbokwdwa3wQ2Fk.jpg">
+          <p class="topText">Make that</p>
+          <p class="bottomText">pretty picture.</p>
+        </div>
+        <div class="col-md-6">
+          <h2>Let's make that thumbnail.</h2>
+          <h3>Please type in the image URL and the phrases.</h3>
+          <form role="form">
+            <div class="form-group">
+              <label>Image URL</label>
+                <input id="imageLink" type="text" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Top Text</label>
+                <input id="topText" type="text" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Bottom Text</label>
+              <input id="bottomText" type="text" class="form-control">
+            </div>
+          </form> 
+        </div>
+      </div>
+    </div>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+      var main = function() {
+  $("#topText").keyup(function() {
+    var topText = $("#topText").val();
+    $(".topText").text(topText);
+  });
+  
+  $("#bottomText").keyup(function() {
+    var bottomText = $("#bottomText").val();
+    $(".bottomText").text(bottomText);
+  });
+  
+  $("#imageLink").keyup(function() {
+    var url = $("#imageLink").val();
+    $("img").attr("src", url);
+  });
+};
+ 
+$(document).ready(main);
+  </script>
+</html>

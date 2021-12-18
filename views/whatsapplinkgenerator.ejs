@@ -1,0 +1,78 @@
+<%-include('./partials/head'); %>
+<body>
+  <%-include('./partials/navbar'); %>
+
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
+<div id="app">
+
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12">
+        <h1>Generate a WhatsApp link</h1>
+        <p>This little helper will generate a whatsapp message link to use in your <a href="https://htmlsig.com">htmlsig.com</a> email signature social icons or other social posts. </p>
+        
+      </div>
+    </div>
+    <div class="row">
+
+      <div class="col-sm-12">
+
+        <div class="form-group">
+          <label for="exampleInputEmail1">Your telephone number</label>
+          <input type="number" v-model="number" class="form-control" id="telephone" aria-describedby="numberHelp" placeholder="Enter your telephone">
+          <small id="numberHelp" class="form-text text-muted">Enter your telephone number 15551234567 not +001-(555)1234567.</small>
+        </div>
+        <div class="form-group">
+          <label for="exampleInputPassword1">A pre-filled message that will automatically appear in the text field of the chat <span class="small">(optional)</span></label>
+          <input type="message" v-model="message" class="form-control" id="message" placeholder="I would like to request a quote" describedby="messageHelp">
+          <small id="messageHelp" class="form-text text-muted">Enter your telephone number 15551234567 not +001-(555)1234567.</small>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="generate-url" :disabled="number == ''" @click="generateUrl">Generate WhatsApp Link</button>
+      </div>
+      <div class="col-sm-12">
+        <br>
+        <h4>Your URL and QR code <span v-if="whatsappurl == ''">will show below once you fill ut the form and press generate</span></h4>
+        <pre id="generated-url" v-if="whatsappurl !== ''">{{whatsappurl}}</pre>
+        <br>
+        <div id="qr-code">
+
+        </div>
+        <p class="small">To findout more about how this works see this link from the <a href="https://faq.whatsapp.com/en/android/26000030/">Whatsapp API</a></p>
+      </div>
+    </div>
+
+ 
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+var app = new Vue({
+  el: '#app',
+  data: {
+    number: '',
+    message: '',
+    whatsappurl:''
+  },
+  methods:{
+    generateUrl: function(){
+      if(this.message){
+        this.whatsappurl = "https://api.whatsapp.com/send?phone="+this.number+"&text="+this.message
+      }else{
+        this.whatsappurl = "https://api.whatsapp.com/send?phone="+this.number
+      }
+      
+      $('#qr-code').qrcode(this.whatsappurl);
+    }
+  }
+  
+})
+</script>
+</html>

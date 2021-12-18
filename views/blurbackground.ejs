@@ -1,0 +1,99 @@
+<%-include('./partials/head'); %>
+ <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix@2.0"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <body>
+
+<%-include('./partials/navbar'); %>
+
+	  <div class="container">
+		   <h1 class="text-center">Blur Image Background Online</h1>
+	  
+		  <div class="form-group">
+			  <input type="file" id="filetag" accept=".png,.jpg" class="form-control" required>
+		  </div>
+		  <label for="blur" class="form-label">Background Blur:</label>
+          <input type="range" class="form-range" value="9" min="1" max="50" step="1" id="blur">
+		  <label for="edgeblur" class="form-label">Edge Blur:</label>
+          <input type="range" class="form-range" value="3" min="1" max="50" step="1" id="edgeblur"><br>
+		  <label class="checkbox-inline"><input type="checkbox" id="flip"> Flip Image</label>
+		  <button id="button" style="display: none;"  class="btn btn-primary">
+			  Processing Image
+			<span class="spinner-border spinner-border-sm"></span>
+		  </button>
+		  <img  src="" style="display: none;" id="preview">
+	  <br>
+	  <canvas class="img-thumbnail" style="display: none;" id="canvas"></canvas>
+<br>
+<br>
+<%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+	  </div>
+  </body>
+
+<script>
+	 var fileTag = document.getElementById("filetag"),
+    preview = document.getElementById("preview");
+	var button = document.getElementById("button")
+	var imgsrc=""
+    
+fileTag.addEventListener("change", function() {
+  button.style.display="block"
+  changeImage(this);
+  
+});
+
+$("#blur").change(function(){
+	
+	blurImage()
+})
+
+$("#edgeblur").change(function(){
+	blurImage()
+})
+
+$("#flip").change(function(){
+	blurImage()
+})
+
+function changeImage(input) {
+  var reader;
+
+  if (input.files && input.files[0]) {
+    reader = new FileReader();
+
+    reader.onload = function(e) {
+		imgsrc=e.target.result
+      preview.setAttribute('src', e.target.result);
+	  blurImage()
+    }
+    reader.readAsDataURL(input.files[0]);
+	
+  }
+}
+    function blurImage(){
+	const img = document.getElementById('preview');
+    const canvas = document.getElementById('canvas');
+
+    async function loadAndBlur() {
+      const net = await bodyPix.load();
+      const segmentation = await net.segmentPerson(img);
+
+      const backgroundBlurAmount = $("#blur").val();
+      const edgeBlurAmount = $("#edgeblur").val();
+      const flipHorizontal = $("#flip").is(":checked");
+
+      bodyPix.drawBokehEffect(canvas, img, segmentation, backgroundBlurAmount, edgeBlurAmount, flipHorizontal);
+	  button.style.display="none"
+	  //preview.style.display="block" 
+	  canvas.style.display="block"
+    }
+    loadAndBlur();
+	}
+  </script>
+
+</html>

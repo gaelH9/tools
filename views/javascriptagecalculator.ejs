@@ -1,0 +1,102 @@
+<%-include('./partials/head'); %>
+<body>
+  <%-include('./partials/navbar'); %>
+<style>
+#main_container {
+    width: 400px;
+    margin: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 30px;
+    font-family: sans-serif;
+    border-radius: 20px;
+    border: 3px solid #999;
+}
+
+#birth_date_input, #age_container {
+    text-align: center;
+    margin: 20px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#age_container {
+    margin: 40px 5px;
+    padding: 20px;
+    border-radius: 50px;
+    border: 1px solid #000;
+    font-weight: bolder;
+    background: #EEE;
+    font-size: 20px;
+    line-height: 40px;
+}
+
+#calculate:active {
+    background: #403300;
+    padding-top: 10px;
+    height: 20px;
+    box-shadow: 0 5px #000 inset;
+}
+
+#age {
+    padding: 5px;
+    border: 3px dashed #AAA;
+    background-color: white;
+}
+html{
+    background:rgb(100, 100, 1000);
+}
+</style>
+
+      <div class="container">
+          
+         <div id="main_container">
+        <div id="birth_date_input">Birth Date*: <input type="date" id="birth_date"></div>
+        <br/>
+        <button id="calculate" class="btn btn-danger">Calculate your Age</button>
+        
+        <div id="age_container"><span id="exact_age">Age</span></div>
+        <p><em>* The year here is 365 days and the month here is 30 days, that means your birthday may not mean you will be 0 days old.</br>  
+        **Don't worry I will not share your input.</em></p>
+        </p>
+    </div>
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+    $("#calculate").click(function(){
+        var mdate = $("#birth_date").val().toString();
+        var yearThen = parseInt(mdate.substring(0,4), 10);
+        var monthThen = parseInt(mdate.substring(5,7), 10);
+        var dayThen = parseInt(mdate.substring(8,10), 10);
+        
+        var today = new Date();
+        var birthday = new Date(yearThen, monthThen-1, dayThen);
+        
+        var differenceInMilisecond = today.valueOf() - birthday.valueOf();
+        
+        var year_age = Math.floor(differenceInMilisecond / 31536000000);
+        var day_age = Math.floor((differenceInMilisecond % 31536000000) / 86400000);
+        
+        if ((today.getMonth() == birthday.getMonth()) && (today.getDate() == birthday.getDate())) {
+            alert("Happy B'day!!!");
+        }
+        
+        var month_age = Math.floor(day_age/30);
+        
+        day_age = day_age % 30;
+        
+        if (isNaN(year_age) || isNaN(month_age) || isNaN(day_age)) {
+            $("#exact_age").text("Invalid birthday - Please try again!");
+        }
+        else {
+            $("#exact_age").html("You are<br/><span id=\"age\">" + year_age + " years " + month_age + " months " + day_age + " days</span> old");
+        }
+    });
+});
+</script>
+</html>

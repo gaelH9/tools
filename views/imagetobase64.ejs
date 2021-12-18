@@ -13,12 +13,19 @@
                 <textarea class="form-control" name="" id="base64code" cols="30" rows="10" placeholder="Base64 Code"></textarea>
             </div>
         </form>
+        <div class="form-group">
+          <button onclick="copytoclipboard()" class="btn btn-primary btn-block">
+            Copy to Clipboard
+          </button>
+        </div>
         <br><br>
         <%-include('./partials/services');%>
         <%-include('./partials/jumbotron');%>
       </div>
 </body>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
   <script>
       function encodeImageFileAsURL(element) {
   var file = element.files[0];
@@ -30,5 +37,25 @@
   }
   reader.readAsDataURL(file);
 }
+function copytoclipboard() {
+      /* Get the text field */
+      var copyText = document.getElementById("base64code");
+
+      /* Select the text field */
+      copyText.select();
+      copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+
+      /* Copy the text inside the text field */
+      document.execCommand("copy");
+
+      swal({
+  title: "Good job!",
+  text: "Base64 Code Successfully Copied",
+  icon: "success",
+});
+
+     
+    }
   </script>
 </html>
+

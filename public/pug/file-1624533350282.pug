@@ -1,0 +1,341 @@
+extends layout
+block content
+	.all-plans-sec.all-plans-sec2
+		section.banner-calc.banner-template1(style="background-image: url('/bundle/assets/images/calculator.webp');")
+			.container
+				.banner-s-wrp
+					.row.align-items-center.justify-content-md-between.flex-column.flex-md-row.m-0
+						.text-center.text-md-left
+							h2 Benefit Calculator
+						.text-center.text-md-right
+							nav.breadcrumb-plan(aria-label='breadcrumb')
+								ol.breadcrumb
+									li.breadcrumb-item
+										a(href='/') Home
+									li.breadcrumb-item.active(aria-current='page')  Benefit Calculator
+		section.calculator.pb40.mb-pt40
+			.container.mb-pl0.mb-pr0
+				.calculator-wrp
+					.row
+						.col-md-3
+							ul#myTab.nav.nav-tabs.tabs-bar(role='tablist')
+								li.nav-item
+									a.nav-link(href='calculator' role='tab') Online Premium Quote
+								li.nav-item
+									a.nav-link(href='https://shriramlife.in/slp/premiumcalculator' role='tab') Premium Calculator
+								li.nav-item
+									a.nav-link(href='https://shriramlife.in/slp/HLVC' role='tab')
+										| Human Life
+										| Value Calculator
+								li.nav-item
+									a.nav-link.active(href='benefit-calculators' role='tab') Benefit Calculator
+						.col-md-9
+							.form-wrapper.shriram-forms.pt-0.calculator-style
+								form(action='')
+									.row
+										.col-md-12.col-12.d-flex.flex-column.mb25.mb-mb20
+											select#selectplanbenefit(name='selectplan')
+												option(value='' disabled='' selected='') Select Plan for Benefit Calculation
+												option(value='incomeplan')
+													| Shriram Life Assured Income Plan
+												option(value='onlineplan') Shriram Life Super Income Plan
+									.benefitplan1
+										.row.calc-row
+											.col-md-6
+												.mb25.mb-mb20
+													.d-flex.flex-column
+														label(for='age')
+															| Age (in Years) 
+															span.required-star *
+														input#age(type='text' name='age' autocomplete='off' placeholder='Enter Life Assured’s Age (as on Last Birthday)')
+												.mb25.mb-mb20
+													.d-flex.flex-column
+														label(for='emailaddress')
+															| Annual Premium
+														input#emailaddress(type='text' name='emailaddress' autocomplete='off' placeholder='Enter the Annual Premium Amount you wish to pay')
+											.col-md-6
+												.mb25.mb-mb20
+													.d-flex.flex-column
+														label(for='term')
+															| Policy Term
+														select#term(name='term')
+															option(value='8') 8 Years
+															option(value='10') 10 Years
+															option(value='12') 12 Years
+															option(value='15') 15 Years
+												.mb25.mb-mb20
+													.d-flex.flex-column
+														label(for='sum')
+															| Basic Sum Assured
+														input#sum(type='text' name='sum' autocomplete='off')
+											.col-md-12
+												ul#option.nav.nav-tabs.tab-basic(role='tablist')
+													li.nav-item
+														a#option1-tab.nav-link.active(data-toggle='tab' href='#option1' role='tab')
+															| OPTION I
+															span ( Income Payouts )
+													li.nav-item
+														a#option2-tab.nav-link(data-toggle='tab' href='#option2' role='tab')
+															| OPTION II
+															span ( Lumpsum Option )
+												#myTabContent.tab-content.tab-basic-p
+													#option1.tab-pane.fade.show.active.calculator-opt1(role='tabpanel' aria-labelledby='option1-tab')
+														.text-center.initial-msg
+															p.box-txt Please fill above details to calculate benefits
+														#bcOp1ShowResults.input-after
+															.bg-blue-light
+																form#aipBenefitcalculatorModeForm(method='POST' enctype='application/json')
+																	label.fsz-18.payout(style='display: block;') Payout Frequency
+																	input#BenefitCalcAipYearly.with-gap(name='BenefitCalcAipMode' type='radio' checked='true' value='Option 1' onclick='benefitCalculator();')
+																	label(for='BenefitCalcAipYearly' style='margin-top: 0;')
+																		h5(style='line-height: 15px;margin-right: 20px;') Yearly
+																	input#BenefitCalcAipHalfYearly.with-gap(name='BenefitCalcAipMode' type='radio' value='Option 2' onclick='benefitCalculator();')
+																	label(for='BenefitCalcAipHalfYearly' style='margin-top: 0;')
+																		h5(style='line-height: 15px;margin-right: 20px;') Half Yearly
+																	input#BenefitCalcAipQuarterly.with-gap(name='BenefitCalcAipMode' type='radio' value='Option 3' onclick='benefitCalculator();')
+																	label(for='BenefitCalcAipQuarterly' style='margin-top: 0;')
+																		h5(style='line-height: 15px;margin-right: 20px;') Quarterly
+																	input#BenefitCalcAipMonthly.with-gap(name='BenefitCalcAipMode' type='radio' value='Option 4' onclick='benefitCalculator();')
+																	label(for='BenefitCalcAipMonthly' style='margin-top: 0;')
+																		h5(style='line-height: 15px;margin-right: 20px;') Monthly
+															// benefit table for Lump Sum Option 1
+															.p-2.border-custom-benefit
+																#bc_table_lump_sum_op1.row.benefitTable
+																	.col-12
+																		.bc-table-title-bar.d-flex.justify-content-between
+																			.bc-table-title(tabindex='0') Scenario – 1 (Maturity)
+																			#op1_graph_maturity.bc-table-view-hide-graph.view-graph(data-view='aip_bc_annual_maturity') View Graph
+																		table#benefitCalculatorTable.bordered.striped.centered.responsive-table.clr-3b3b.mt-5
+																			tbody
+																				tr
+																					td.bold Total Premium
+																					td.bold Total Maturity Benefit
+																					td.bold Death Benefit during Policy Term
+																				tr
+																					td
+																						| ₹ 
+																						span#totalPremiumPaid_op1 8,00,00,000
+																					td
+																						| ₹ 
+																						span#totalMaturityBenefit_op1 10,68,00,000
+																					td
+																						| ₹ 
+																						span#dBduringPt_op1 10,68,00,000
+																// benefit visual for maturity benefit Annual Payout Option here :: START
+																.row.benefitVisual.mt-3.margin-graph-custom.mb-3
+																	#aip_bc_annual_maturity.bcMBPO(style='display: none;')
+																		.bc-benefit-visual-title
+																			| Benefit Structure
+																			hr
+																		.row.margin-graph-custom
+																			.col-1.col-md-2
+																			.col-md-3.col-3.aip_mb_annualpr.bcTextBorder.borderYellow.text-center
+																				| Pay ₹ 
+																				span#aip_bc_annualpr 1,00,00,000
+																				|  per annum for 
+																				span#aip_bc_ppt_graph 8
+																				|  years
+																			.col-md-4.col-5
+																			.col-md-3.col-offset-0.col-6.bcTextBorder.borderYellow.text-center
+																				.aip_mb_text_op
+																					| Your Policy will 
+																					br
+																					| Ends here 
+																					span
+																		.row.margin-graph-custom
+																			.col-md-1.mt-2
+																				.row Years
+																			.col-md-10.bcBvBlockRow.text-right
+																				.row(style='width: 110%;')
+																					.row(style='width: 100%;')
+																						.col-6
+																							.bc_db_text.bcSolidBorderMidYellow.halfWide
+																						.col-6
+																							.bc_db_text.bcSolidBorderRight
+																					.row(style='width: 100%;')
+																						.col-6.pr-0
+																							.sip_bc_db_text.bcSolidBorderYellow
+																								.infoMsgAboveYrs
+																						.col-6
+																							.bc_db_text.bcSolidBorderRight
+																				.row
+																					.sipBcBvBlock(style='width:50%;')
+																						.emptyDiv
+																						.bcShiftLeft 0
+																						.bcShiftRight.aip_mb_text_ppt_end
+																							span 8
+																					.sipBcBvBlock(style='width:50%;')
+																						.emptyDiv
+																						.bcShiftRight.aip_mb_text_pt_end
+																							span 16
+																				.row
+																					.sipBcBvBlock(style='width:50%;')
+																						.bcShiftLeft.fsz-10 policy starts
+																						.bcShiftRight.fsz-10 Policy Maturity
+																					.sipBcBvBlock(style='width:50%;')
+																						.bcShiftLeft.aip_mb_text_aib.fsz-10.margin-left-10-aip.line-height-18
+																							| After the Policy Maturity, You will starts receiving 
+																							br
+																							| ₹ 
+																							span#annually_aipb.fsz-15.fw-600 1,33,50,000
+																							|  per annum for next 
+																							span#aippt 8
+																							|  years 
+																							br
+																							|  Total Benefit = ₹ 
+																							span#total_aipb.fsz-15.fw-600 10,68,00,000
+																						.bcShiftRight.fsz-10 policy ends
+																				.row(style='width: 100%;')
+																					.sipBcBvBlock(style='width:50%;')
+																						.bcShiftLeft.fsz-10.aip_mb_text_age
+																							| Age 
+																							span 45
+																						.bcShiftRight.fsz-10.margin-right-minus-5.aip_mb_text_ppt_end_age
+																							| Age 
+																							span 53
+																					.sipBcBvBlock(style='width:50%;')
+																						.bcShiftRight.fsz-10.aip_mb_text_pt_end_age
+																							| Age 
+																							span 61
+																				.row(style='width: 100%;')
+																					.bc_db_text.bcDashedBorder.fullWide
+																		.row
+																			.row(style='width: 100%;')
+																				.col-12
+																					.bc_db_text.bcDashedBorderMid
+																		.row
+																			.col-md-3.col-3
+																			.col-md-6.col-6.bcTextBorder.borderBlue.text-center
+																				.aip_bc_db_text_op1
+																					| If Death happens anytime during the policy term, Death Benefit is paid to nominee in terms of annual payouts and the policy terminates.
+																			.col-md-3
+															// benefit visual for maturity benefit Annual Payout Option here ::END
+															// benefit visual for Death benefit Annual Payout Option here ::START
+															.p-2.border-custom-benefit
+																#bc_table_annual_op1.row.benefitTable
+																	.col-12
+																		.bc-table-title-bar.d-flex.justify-content-between
+																			.bc-table-title(tabindex='0') Scenerio 2 - (Death during the Policy Term)
+																			#op1_graph_death.bc-table-view-hide-graph.view-graph(data-view='aip_bc_annual_death') View Graph
+																		table#benefitCalculatorTable.bordered.striped.centered.responsive-table.clr-3b3b.mt-5
+																			tbody
+																				tr
+																					td.bold Total Premium
+																					td.bold Death Benefit during Policy Term
+																				tr
+																					td
+																						| ₹ 
+																						span#totalPremiumPaid_db_op1 3,00,00,000
+																					td
+																						| ₹ 
+																						span#totalDeathBenefitPaid_db_op1 10,68,00,000
+																// benefit visual for Annual Option 1 Death here
+																.row.benefitVisual.mt-3.margin-graph-custom.mb-3(style='width: 100%;')
+																	#aip_bc_annual_death.bcMBPO(style='display: none;width: 100%;')
+																		.bc-benefit-visual-title
+																			| Benefit Structure
+																			hr
+																		.row.margin-graph-custom
+																			.col-1.col-md-1
+																			.col-md-3.col-3.aip_mb_annualpr.bcTextBorder.borderYellow.text-center
+																				| Paid ₹ 
+																				span#aip_bc_annualpr 1,00,00,000
+																				|  per annum for 
+																				span#aip_bc_ppt_graph  3
+																				|  years
+																			.col-md-5.col-5
+																			.col-md-3.col-offset-0.col-6.bcTextBorder.borderYellow.text-center
+																				.aip_mb_text_op
+																					| Policy will 
+																					br
+																					| ends here 
+																					span
+																		.row.margin-graph-custom
+																			.col-md-1.mt-2
+																				.row Years
+																			.col-md-10.bcBvBlockRow.text-right
+																				.row(style='width: 110%')
+																					.row.w-100
+																						.col-4
+																							.bc_db_text.bcSolidBorderMidYellow.halfWide
+																						.col-2
+																						.col-6
+																							.bc_db_text.bcSolidBorderRight
+																					.row.w-100
+																						.col-4
+																							.sip_bc_db_text.bcSolidBorderYellow
+																								.infoMsgAboveYrs
+																						.col-2
+																						.col-6
+																							.bc_db_text.bcSolidBorderRight
+																				.row
+																					.sipBcBvBlock
+																						.emptyDiv
+																						.bcShiftLeft 0
+																						.bcShiftRight
+																							span 3
+																					.sipBcBvBlock
+																						.emptyDiv
+																						.bcShiftRight.aip_db_text_pt_end
+																							span 11
+																				.row
+																					.sipBcBvBlock
+																						.bcShiftLeft.fsz-10 policy starts
+																						.bcShiftRight.fsz-10.margin-right-minus-25 Death after 3 years
+																					.sipBcBvBlock
+																						.bcShiftLeft.aip_db_text_aib.fsz-10.margin-left-20-sip.line-height-18
+																							| Your nominee will starts receiving 
+																							br
+																							| ₹ 
+																							span#annually_aipb.fsz-15.fw-600 1,33,50,000
+																							|  per annum for next 
+																							span#aippt 8
+																							|  years 
+																							br
+																							|  Total Benefit = ₹ 
+																							span#total_aipb.fsz-15.fw-600 10,68,00,000
+																						.bcShiftRight.fsz-10 policy ends
+																				.row
+																					.sipBcBvBlock
+																						.bcShiftLeft.fsz-10.aip_db_text_age
+																							| Age 
+																							span 45
+																						.bcShiftRight.line-height-18.fsz-10.margin-right-minus-5.aip_db_text_ppt_end_age
+																							| Age 
+																							span 48
+																							br
+																							|  (Death)
+															// end benefit visual for Option 1 ::END
+													#option2.tab-pane.fade(role='tabpanel' aria-labelledby='option2-tab')
+									.benefitplan2
+										.row.calc-row
+											.col-md-6
+												.mb25.mb-mb20
+													.d-flex.flex-column
+														label(for='age')
+															| Age (in Years) 
+															span.required-star *
+														input#age(type='text' name='age' autocomplete='off' placeholder='Enter Life Assured’s Age (as on Last Birthday)')
+												.mb25.mb-mb20
+													.d-flex.flex-column
+														label(for='emailaddress')
+															| Annual Premium
+														input#emailaddress(type='text' name='emailaddress' autocomplete='off' placeholder='Enter the Annual Premium Amount you wish to pay')
+											.col-md-6
+												.mb25.mb-mb20
+													.d-flex.flex-column
+														label(for='sum')
+															| Policy Term (75 minus Entry Age)
+														input#sum(type='text' name='sum' autocomplete='off')
+												.mb25.mb-mb20
+													.d-flex.flex-column
+														label(for='term')
+															| Premium Paying Term
+														select#term(name='term')
+															option(value='8') 8 Years
+															option(value='10') 10 Years
+															option(value='12') 12 Years
+															option(value='15') 15 Years
+										p.box-txt Please fill above details to calculate benefits
+
+

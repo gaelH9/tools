@@ -1,0 +1,102 @@
+<%-include('./partials/head'); %>
+<body>
+  <%-include('./partials/navbar'); %>
+
+<style>
+body {
+    min-height: 100vh;
+    background: linear-gradient(150deg, #de7aff, #62a9b9);
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+    align-items: center;
+    font-family: "Open Sans", sans-serif;
+}
+
+body h1, body h2 {
+    color: #1a1930;
+    margin: 0.3rem;
+}
+
+.editor {
+    margin-top: 2rem;
+    display: flex;
+    flex-flow: row wrap;
+    min-width: 60vw;
+    min-height: 500px;
+    max-height: 700px;
+    background: grey;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.5);
+}
+
+.editor .gutter {
+    background: #11101f;
+    color: grey;
+    display: flex;
+    flex-flow: column wrap;
+    padding: 1rem;
+}
+
+.editor .gutter span {
+    padding: 0.5rem;
+    color: #62a9b9;
+}
+
+.editor textarea {
+    background: #1a1930;
+    flex: 1;
+    border: 0;
+    color: white;
+    padding: 1rem;
+    line-height: 2.2;
+    overflow: hidden;
+}
+
+.editor textarea:focus {
+    outline: none;
+}
+</style>
+
+      <div class="container">
+             <h1>Gutter Line Numbers Experiment</h1>
+<h2>[Unfinished pen, There is bug, can you discover it :) ?]</h2>
+<div class="editor">
+    <div class="gutter"><span>1</span></div><textarea rows="5"></textarea>
+</div>
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+/**
+ * TODO:
+ *
+ * (1) Create a whole row on the editor to represent the line
+ * rather than adding gutter numbers (to fix text overflow problem).
+*/
+const input = document.querySelector('textarea');
+const gutter = document.querySelector('.gutter');
+let val = input.value;
+let numOfLines = 1;
+
+function update(e) {
+    val = input.value;
+    
+    let lineBreaks = val.match(/\n/gi) || [];
+    let numOfSpans = gutter.childElementCount;
+    numOfLines = lineBreaks.length ? lineBreaks.length + 1 : 1;
+    
+    gutter.innerHTML = ""
+    for(var i = 0; i < numOfLines; i++) {
+        console.log('creating no', i)
+        var el = document.createElement('span');
+        el.innerHTML = i+1;
+        gutter.appendChild(el); 
+    }
+}
+
+input.addEventListener('input', update);
+</script>
+</html>

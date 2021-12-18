@@ -1,0 +1,53 @@
+<%-include('./partials/head'); %>
+<body>
+  <%-include('./partials/navbar'); %>
+
+  <div class="container">
+    <h1 class="text-center">
+        Remove Background From URL Image Online
+    </h1>
+      <form id="form">
+      <div class="form-group">
+          <label for="imageurl">Enter Image URL:</label>
+          <input class="form-control" type="text" id="url" placeholder="Enter Image URL" required>
+      </div>
+      <div class="form-group">
+          <button id="button" class="btn btn-block btn-danger">
+              Remove Background From Image
+          </button>
+      </div>
+      </form>
+  
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script>
+   $("#form").submit(function(e){
+
+      e.preventDefault()
+
+      var url = $("#url").val()
+
+
+      $.ajax({
+        
+          method:"post",
+          url:"/removebackgroundfromurl",
+          data:{url:url},
+          success:function(data){
+            console.log(data)
+window.open('/download?path='+data.path)
+          $("#button").text("Upload File")
+          $("#button").prop("disabled",false);
+          location.reload();
+          }
+  
+      })
+
+
+    })
+  </script>
+</html>

@@ -1,0 +1,113 @@
+- @order||= order
+- is_pdf||=false
+- process_ids = @order.evaluations.where(custom: true, hidden: false).pluck(:db_process_id)
+%table
+  %tbody
+    %tr
+      %td{colspan:2}
+        - if is_pdf
+          %img{src: "https://#{Rails.application.secrets.domain_name}/abuntis.png"}
+          = wicked_pdf_image_tag 'abuntis.png'
+        - else
+          %img{src: "https://#{Rails.application.secrets.domain_name}/abuntis.png"}
+    -#    = @order.user.name
+    -#    %br/
+    -#    = @order.user.email
+    -#  %td.align_right
+    -#    = link_to(image_tag("http://#{Rails.application.secrets.domain_name}/assets/#{Rails.application.secrets.logo}", :height => 50), root_path)
+    -#    -#= link_to(image_tag("http://#{Rails.application.secrets.domain_name}/assets/#{Rails.application.secrets.domain_name}_logo.png",:width => 256, :height => 50), root_path)
+    %tr
+      %td.align_right{:align=>"right", :colspan => 2}
+        = "#{dc('company_city', 'Hamburg')}, den #{@order.updated_at.strftime('%d.%m.%Y')}"
+    %tr
+      %th{:colspan => 2}
+        %strong
+          Lieferschein-Nr.:
+        %span
+          = " #{@order.id}"
+    %tr
+      %td{:colspan => 2}
+    %tr
+      %th{:colspan=> 2}
+        %strong
+          Lieferergebnis
+    %tr
+      %td
+        Erbrachte Leistung:
+      %td.align_right
+        = DbProcess.where(id: process_ids).order(:prio).map{|m| m.name}.join(', ')
+    %tr
+      %td
+        Dateiname:
+      %td.align_right
+        = @order.input_file.file_name
+        = " per #{@order.ftp_order? ? "FTP Upload" : "direktem Upload" }"
+    %tr
+      %td
+        Zeitpunkt der Anlieferung:
+      %td.align_right
+        = @order.created_at.strftime("%d.%m.%Y %H:%M:%S")
+    %tr
+      %td
+        Auftrag abgeschlossen:
+      %td.align_right
+        = @order.updated_at.strftime("%d.%m.%Y %H:%M:%S")
+    %tr
+      %td
+        Anzahl Datensätze:
+      %td.align_right
+        = @order.input_file.line_count
+    -  DbProcess.where(id: process_ids).order(:prio).each do |process|
+      - next if process.name == "Brücke"
+      -# Reiner Ping
+      %tr
+        %th{:colspan => 2}
+          %strong
+            = process.name
+      - @order.evaluations.where(db_process_id: process.id, custom: true, hidden: 0).order(:pos).each do |evaluation|
+        - next if ["Persontreffer","Haushaltstreffer"].include?(evaluation.result_value) && !@order.user.user_config.enrichment_details?
+        %tr
+          %td
+            = evaluation.result_label
+          %td.align_right
+            = evaluation.result_value
+%p.page_break
+  Lieferung und Leistung erfolgen grundsätzlich auf Basis unserer allgemeinen Geschäftsbedingungen.
+  %br/
+  %br/
+  Datenlieferungen sind umgehend nach Erhalt auf technische Weiterverarbeitbarkeit und inhaltliche Richtigkeit zu prüfen.
+  %br/
+  Etwaige Mängel sind umgehend anzuzeigen.
+  %br/
+  Bei Verarbeitung erkennbar fehlerhafter Daten gilt die Lieferung als handelsüblich und es besteht keinerlei Schadensersatzanspruch.
+%br
+%br
+%table{:style=>"font-size: 9pt; line-height: 9pt; width: 100%;"}
+  %tbody
+    %tr
+      %td{style: "width: 30%;"}
+        Abuntis GmbH & Co. KG
+        %br/
+        Spitalerstrasse 16
+        %br/
+        20095 Hamburg
+        %br/
+        Deutschland
+        %br/
+      %td{style: "width: 30%;"}
+        Commerzbank
+        %br/
+        DE39200400000637055500
+        %br/
+        COBADEFFXXX
+        %br/
+        Ust-ID: DE313758657
+      %td{:valign => "top"}
+        Geschäftsführer: Björn Stiegler
+- unless controller.nil?
+  - if controller.request.format == 'js'
+    = "Summe aller Positionen(#{@order.evaluations.where(custom: 1, hidden: 0).sum(:result_value)}) - DS(#{@order.input_file.line_count}) = #{@order.evaluations.where(custom: 1, hidden: 0).sum(:result_value) - @order.input_file.line_count} "
+    = " | "
+    = link_to "Bearbeiten", show_modal_path(@order,'edit_protokoll'), remote: true
+    = " | "
+    = link_to "Herunterladen", download_custom_protokoll_path(@order), target: '_blank'

@@ -1,0 +1,469 @@
+doctype html
+html(lang='en')
+	// Success at 01:48 on 14 May 2021
+	head
+		title= 'Extracted Fields'
+		link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/semantic-ui@2.3.3/dist/semantic.min.css')
+		link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css')
+		script(src="https://code.jquery.com/jquery-2.2.4.js", integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=", crossorigin="anonymous")
+		script(src="/crud.js")
+		style.
+			table.ui.celled img { display: inline-block; }
+			footer { margin: 35px 0 15px 0; text-align: center }
+			#trainer {
+				//padding: 10px;
+				//visibility: hidden;
+				//input:padding:10px;
+				font-size: small;
+			}
+			#formview {
+				//padding: 10px;
+				visibility: visible;
+				display: block;
+				font-size: small;
+				float:left;
+				overflow-y: auto;
+				height: 85%;
+			}
+			#sourcetext {
+				//padding: 10px;
+				visibility: visible;
+				display: block;
+				float:left;
+				overflow-y: auto;
+				height: 85%;
+				word-break: break-word;
+				font-size: small;
+			}
+
+			.form-control {
+				margin-bottom: 1%;
+			}
+			input#fieldName {
+				color:red;
+			}
+			#btn2 {
+				visibility: hidden;
+				margin-top: 2%;
+			}
+			#btn3 {
+				visibility: hidden;
+				margin-top: 2%;
+			}
+			td {
+				word-break: break-all;
+				max-width: 150px;
+			}
+
+			button:disabled {
+				/*background: #F5F5F5;*/
+				/*color : #C3C3C3; */
+			}
+			label {
+				font-size: smaller;
+				margin-bottom: 0px;
+			}
+			
+			.tooltip1 {
+				position: relative;
+				display: inline-block;
+				visibility: hidden;
+				border-bottom: 1px dotted black;
+				font-size: smaller;
+				float: right;
+				color:red;
+			}
+
+
+			.tooltip1 .tooltiptext {
+				visibility: hidden;
+				width: 200px;
+				background-color: black;
+				color: #fff;
+				text-align: center;
+				border-radius: 6px;
+				padding: 5px 0;
+
+				/* Position the tooltip */
+				position: absolute;
+				z-index: 1;
+			}
+
+			.tooltip1:hover .tooltiptext {
+				visibility: visible;
+			}
+
+
+
+	body(style='margin-left: 2%;margin-right: auto;margin-top: 1%;width: 125%; height:40%')
+		a(style="color: #f0ad4e", href='/')
+			span Home
+		div(class="row")
+			div(class='col-sm-3 first-column' style="border-style: ridge; height:650px;")
+				main#main
+				h2 Extracted Fields
+				#formview
+					table.ui.celled.table.center.aligned.striped
+						thead
+							tr
+								th Field Name
+								th Field Value
+								th Action
+						tbody
+							each n in fields
+								tr
+									td(id="fn")=n.fieldName
+									td(id=n.fieldName)=n.fieldValue
+									if n.newvendorcode.trim()==""
+										td(style="width: 90px;")
+											button(onclick=`getForm(${JSON.stringify(n)}, ${JSON.stringify(fields)})`) Select
+									else
+										if n.fieldName=="vendorcode"
+											td(style="width: 90px;")
+												button(onclick=`getForm(${JSON.stringify(n)}, ${JSON.stringify(fields)})`) Confirm
+
+
+			div(class="col-sm-3 second-column"  style="border-style: ridge; height:650px;")
+
+					h2 Train Selected Field
+					//h2 Train Selected Field
+					div#trainer
+						form(class="form-trainer" id="form-trainer1" action="edit" method="post")  
+							#error
+								if error
+									p.text-danger Error!!!
+								h6(class=message style="color:red;")
+								- var h1Classes = ['h3', 'mb-3', 'font-weight-normal']
+								//h1(class=h1Classes) Train Field Extraction
+								label( for="fieldName" class="") Extracted Field
+								input(type="text" name="fieldName" id="fieldName" class="form-control" placeholder="" required autofocus readonly)
+								label(for="how" class="") How (Method to be used -- Either Split, Regular or leave blank)
+								input(type="text" name="how" id="how" class="form-control")
+								label(for="startLabel" class="") Start Label 
+								input(type="text" name="startLabel" id="startLabel" class="form-control")
+								label(for="endLabel" class="") End Label 
+								input(type="text" name="endLabel" id="endLabel" class="form-control")
+								label(for="pattern") Pattern (Regular Expression or any character -- for space character, enter space)
+								input(type="text" name="pattern" id="pattern" class="form-control")
+								label(for="index") Index or Offset
+								div(class="tooltip1" id="tooltip1") Hover Here for possible values
+									span(class="tooltiptext" id="tooltiptext") Tooltip text
+								input(type="text" name="index" id="index" class="form-control" placeholder="")
+									
+
+								input(type="hidden" name="source" id="source" class="form-control")
+								input(type="hidden" name="fieldValue" id="fieldValue" class="form-control")
+								input(type="hidden" name="strFields" id="strFields" class="form-control")
+
+								input(type="hidden" name="newvendorcode" id="newvendorcode" class="form-control")
+								input(type="hidden" name="vendorcode" id="vendorcode" class="form-control")
+								input(type="hidden" name="type" id="type" class="form-control")
+								input(type="hidden" name="subType" id="subType" class="form-control")
+
+								input(type="hidden" name="mongoid" id="mongoid" class="form-control")
+
+								- var buttonClass=['btn', 'btn-lg', 'btn-primary', 'btn-block'];
+								button(class=buttonClass type="" disabled onclick=`testField(); return false;` ) Test Template
+
+								#btn2
+									- var buttonClass=['btn', 'btn-lg', 'btn-warning', 'btn-block'];
+									//button(class=buttonClass type="" onclick=`saveField(); return false;` ) Update Template
+									button(class='buttonClass' type="" formaction='edit') Update Template
+
+								#btn3
+									- var buttonClass=['btn', 'btn-lg', 'btn-warning', 'btn-block'];
+									//button(class=buttonClass type="" onclick=`addTemplate(); return false;` ) Add New Template
+									button(class='buttonClass' type="" formaction='add') Add New Template
+
+
+			div(class="col-sm-3 second-column"  style="border-style: ridge; height:650px;")
+					h2 Text of PDF File
+					div#sourcetext
+						p 
+	footer
+		p(style="text-align:left;") © #{new Date().getFullYear()} Innoval Digital Solutions
+
+							//-----------------GETFORM WHEN Select Clicked-----------------------------
+							script.
+								var getForm = function(n, fields) {  
+									var templates = {}; entries = [];
+									$('button').prop('disabled', false);
+
+									//console.log("155", JSON.stringify(n, null,4));
+									//console.log("156", JSON.stringify(fields, null,4));
+									//alert(157);
+
+
+									var fieldValue="";
+									var vendorcode = n.vendorcode;
+									var newvendorcode = n.newvendorcode; 
+									var type = n.type;
+									var subType = n.subType;
+									var vendorcode = n.vendorcode;
+									var fieldName = n.fieldName;
+									if(newvendorcode!="") fieldValue = newvendorcode;
+									else fieldValue = n.fieldValue;
+
+									
+									var mongoid = n.mongoid;
+
+									// Extracted by the Server
+									fields.forEach((field, index, array) => {
+										var fieldName = field.fieldName; 
+										var fieldValue = field.fieldValue; 
+										var how = field.how; 
+										var startLabel = field.startLabel; 
+										var endLabel = field.endLabel; 
+										var pattern = field.pattern; 
+										var index = field.index; 
+										
+										entries.push({"startLabel":startLabel,"endLabel":endLabel,"fieldId":fieldName, "how":how, "pattern":pattern,"index":index});
+									});
+
+									templates = {
+												"originatorCode": vendorcode,
+												"type": type,
+												"subType": subType,
+												"status": "ACTIVE",
+												"entries" : entries
+									};
+
+						
+									var how = n.how;
+									var startLabel = n.startLabel;
+									var endLabel = n.endLabel;
+									var pattern = n.pattern;
+									var index = Number(n.index);
+									
+									document.getElementById("fieldName").value=fieldName+": "+fieldValue;
+									document.getElementById("how").value=how;
+									document.getElementById("startLabel").value=startLabel;
+									document.getElementById("endLabel").value=endLabel;
+									document.getElementById("pattern").value=pattern;
+									document.getElementById("index").value=index;
+
+									var source = n.source;
+									document.getElementById("source").value=source;
+									document.getElementById("strFields").value=JSON.stringify(templates);
+
+									// Following to add new template if newvendorcode != ""
+									document.getElementById("newvendorcode").value=newvendorcode;
+									document.getElementById("vendorcode").value=vendorcode;
+									document.getElementById("type").value=type;
+									document.getElementById("subType").value=subType;
+									document.getElementById("mongoid").value=mongoid;
+
+									document.getElementById("sourcetext").innerHTML=source;
+									
+
+
+									//fieldValue = extractFields(how, startLabel, endLabel, pattern, index, source);
+
+									var temp = extractFields(how, startLabel, endLabel, pattern, index, source);
+									fieldValue = temp[0];
+
+									document.getElementById("tooltip1").style.visibility = "visible";
+									document.getElementById("tooltiptext").innerHTML=temp[1]; 
+									
+								}
+
+								function getStrBetween(startLabel, endLabel, source) {
+
+									//alert("Src "+source);
+									var begin = 0; var end = 0;
+									if(startLabel =="" && endLabel=="") return source;
+									if(!startLabel) startLabel="";
+									if(startLabel.trim()=="") begin = 0;
+									else begin = source.indexOf(startLabel)+startLabel.length;
+									if(!endLabel) endLabel="";
+									if(endLabel=="") end = source.length;
+									else end = source.indexOf(endLabel);
+									return source.substring(begin, end).trim();
+								}
+								function extractFields(how, startLabel, endLabel, pattern, index, source) {
+									var arrfield = null;
+									if(pattern=="space") pattern = " ";
+									index = Number(index);
+									if(!how || how.trim()=="") str="";
+									else str = getStrBetween(startLabel, endLabel, source);
+									if(how=="Split"){
+										arrfield = str.split(pattern);
+										if(index<0) index = arrfield.length + index;
+									}
+									else if(how == "Regular"){
+
+										let matchpattern = new RegExp(pattern, 'g');
+										arrfield = str.match(matchpattern);
+										if(index<0) index = arrfield.length + index;
+									}
+									if(arrfield!=null) {
+										console.log("Possible Values >>>>",arrfield);
+										str = arrfield[index];
+
+										var txt="";
+										arrfield.forEach(getOption);
+										var tooltip = "<table border=1 cellspacing = '20' width='100%'>"+txt+"</table>";
+										function getOption(value, index, array) {
+										  txt = txt + "<tr><td>"+index+"</td><td>"+value+"</td></tr>";
+										}
+									
+
+									}
+									else str = "";
+									return [str.trim(), tooltip];
+								}
+
+								//---------------WHEN TEST TEMPLATE CLICKED-----------------
+								var testField = function() {  
+									//document.getElementById("btn2").style.visibility = "hidden";
+									//document.getElementById("btn3").style.visibility = "hidden";
+									// Read edited values from training screen
+									
+									var how = document.querySelector('#how').value;
+									var startLabel = document.querySelector('#startLabel').value;
+									var endLabel = document.querySelector('#endLabel').value;
+									var pattern = document.querySelector('#pattern').value;
+									var index = document.querySelector('#index').value;
+									var source = document.querySelector('#source').value;
+
+									// Extract the field value using edited template
+
+									var temp = extractFields(how, startLabel, endLabel, pattern, index, source);
+									fieldValue = temp[0];
+									//alert(temp[1]);
+
+									document.getElementById("tooltip1").style.visibility = "visible";
+									document.getElementById("tooltiptext").innerHTML=temp[1]; 
+
+
+									//Read newvendorcode to check if not ""
+									var newvendorcode = document.querySelector('#newvendorcode').value;
+
+									var vendorcode = document.querySelector('#vendorcode').value;
+									var type = document.querySelector('#type').value;
+									var subType = document.querySelector('#subType').value;
+
+
+									//Read the full template for all field names 
+									var strTemplates = document.querySelector('#strFields').value; 
+									var templates = JSON.parse(strTemplates);  // converting to object
+									//console.log(295, templates);
+									templates = templates.entries;
+									//console.log(297, templates);
+
+									//from the above template, remove the edited object
+
+									// to pull out fieldName by discarding extracted value
+									var fieldName = document.querySelector('#fieldName').value;
+									var arr = fieldName.split(":");
+									fieldName = arr[0];
+
+									//document.getElementById(fieldName).innerHTML=fieldValue; // updating fieldValue in 1st columnn
+
+									if(newvendorcode=="") {      // edit template
+
+										// the changed entry
+										var entry = {"startLabel":startLabel,"endLabel":endLabel,"fieldId":fieldName,"how":how, "pattern":pattern,"index":index};
+
+
+										//console.log(JSON.stringify(templates)); alert(298);
+										//Remove the object being edited from the templates received from server
+										var templates = templates.filter(function(value, index, arr) {
+											//console.log(JSON.stringify(value)); alert(300);
+									 		return value.fieldId.trim()!==fieldName.trim();
+									 	});
+										templates.push(entry);
+										var editedtemplate = {};
+
+										editedtemplate = {
+												"originatorCode": vendorcode,
+												"type": type,
+												"subType": subType,
+												"status": "ACTIVE",
+												"entries" : templates
+										};
+										strTemplates = JSON.stringify(editedtemplate,null,4);
+
+										document.getElementById("strFields").value=strTemplates;  //added here
+
+										document.getElementById("form-trainer1").action = "edit";
+
+
+									}
+									else {
+										// the new template
+										var entry = {"startLabel":startLabel,"endLabel":endLabel,"fieldId":fieldName,"how":how, "pattern":pattern,"index":index};
+
+										//Remove the object being edited from the templates received from server
+										var templates = templates.filter(function(value, index, arr) {
+									 		return value.fieldId.trim()!==fieldName.trim();
+									 	});
+										templates.push(entry);
+										var addtemplate = {};
+
+										if(fieldValue!="") newvendorcode = fieldValue;
+
+										addtemplate = {
+												"originatorCode": newvendorcode,
+												"type": type,
+												"subType": subType,
+												"status": "ACTIVE",
+												"entries" : templates
+										};
+										strTemplates = JSON.stringify(addtemplate,null,4);
+										document.getElementById("form-trainer1").action = "add";
+									}
+
+
+									document.getElementById("fieldName").value=fieldName+": "+fieldValue;
+									document.getElementById("how").value=how;
+									document.getElementById("startLabel").value=startLabel;
+									document.getElementById("endLabel").value=endLabel;
+									document.getElementById("pattern").value=pattern;
+									document.getElementById("index").value=index;
+									document.getElementById("source").value=source;
+									document.getElementById("strFields").value=strTemplates;
+									document.getElementById("newvendorcode").value=newvendorcode;
+									document.getElementById("vendorcode").value=vendorcode;
+									document.getElementById("type").value=type;
+									document.getElementById("subType").value=subType;
+
+									//document.getElementById(fieldName).innerHTML=fieldValue;
+
+
+
+									if(newvendorcode=="") {
+										document.getElementById("btn2").style.visibility = "visible";
+										return false;
+									}
+									else {
+										document.getElementById("btn3").style.visibility = "visible";
+										return false;
+									}
+								
+									return false;
+								}
+
+								//---------------WHEN UPDATE TEMPLATE CLICKED-----------------
+								var saveField = function() {   //alert(310);
+
+									var strTemplates = document.querySelector('#strFields').value;
+									
+									//console.log("335>>> ", strTemplates); 
+
+								}
+
+								//---------------When Add Template Clicked.....................
+
+								var addTemplate = function() {   
+
+									var strTemplates = document.querySelector('#strFields').value;
+									
+									//console.log("345>>> ", strTemplates); 
+
+								}
+
+	//tfoot
+			//tr
+				//th(colspan='8')
+		

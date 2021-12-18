@@ -1,0 +1,269 @@
+<%-include('./partials/head'); %>
+<body>
+<style>
+textarea {height:400px; width: 100%;}
+
+table {background-color: #fff;}
+
+.row {padding:2px;}
+</style>
+  <%-include('./partials/navbar'); %>
+
+      <div class="container">
+          <h1 class="text-center">
+              JSON to JSON Schema Generator Online
+          </h1>
+            <div class="row">
+  <div class="col-md-6">
+    <label for="src"><h1>Source JSON</h1></label>
+    <textarea type="text" id="src">
+  {"id":1, "name":"Item 1", "isRoot": true, "subitems":
+    [
+      {"id": 101, "name": "Sub Item 1", "value": "10.0"},
+      {"id": 102, "name": "Sub Item 2"}
+    ]
+  }
+  </textarea>
+    <button id="process" onclick="process()" class="btn btn-primary">Process</button>
+  </div>
+  <div class="col-md-6">
+    <label for="tgt"><h1>Generated Schema</h1></label>
+    <textarea type="text" id="tgt"></textarea>
+  </div>
+</div>
+<div>
+  <h1>Reg Ex Samples</h1>
+  <table class="table ">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Reg Ex</th>
+        <th>Example(s)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Mongo Object Id</td>
+        <td>^[a-zA-Z0-9]{24}$</td>
+        <td>5408571b52187a22502b321f</td>
+      </tr>
+      <tr>
+        <td>UUID/GUID</td>
+        <td>^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$</td>
+        <td>37bab297-5ca2-4f71-a949-c9beba57eb8a</td>
+      </tr>
+      <tr>
+        <td>Currency</td>
+        <td>^[A-Z]{3}$</td>
+        <td>GBP</td>
+      </tr>
+      <tr>
+        <td>Integer (Signed)</td>
+        <td>^-?\d+$</td>
+        <td>-45, 1, 123</td>
+      </tr>
+      <tr>
+        <td>Integer (Unsigned)</td>
+        <td>^\d+$</td>
+        <td>1, 123</td>
+      </tr>
+      <tr>
+        <td>Decimal (Signed)</td>
+        <td>^-?\d+(\.\d+)?$</td>
+        <td>-45.23, 1, 123.5</td>
+      </tr>
+      <tr>
+        <td>Decimal (Unsigned)</td>
+        <td>^\d+(\.\d+)?$</td>
+        <td>1, 123.5</td>
+      </tr>
+      <tr>
+        <td>Flight Number</td>
+        <td>^[A-Z]{2,3}\d+{3,4}$</td>
+        <td>AB123, ABC1234</td>
+      </tr>
+      <tr>
+        <td>IATA Code</td>
+        <td>^[A-Z]{3}$</td>
+        <td>LHR, MAN</td>
+      </tr>
+      <tr>
+        <td>Date (YYYY-MM-DD)</td>
+        <td>^\d{4}-\d{2}-\d{2}$</td>
+        <td>2014-01-16</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="	https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+ <script>
+var availableRules = {
+    mongoObjectId : function(name, value, schema) {
+        
+        // Applies a regex for mongo object ids
+        var pattern = "^[a-zA-Z0-9]{24}$";
+        
+        if(name.toUpperCase().indexOf("ID") != -1 && typeof value == "string" &&  new RegExp(pattern).test(value)) {
+            schema.pattern = pattern;
+        }
+        
+        return schema;
+    },
+  uuid : function(name, value, schema) {
+        
+        // Applies a regex for mongo object ids
+        var pattern = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
+        
+        if(name.toUpperCase().indexOf("ID") != -1 && typeof value == "string" &&  new RegExp(pattern).test(value)) {
+            schema.pattern = pattern;
+        }
+        
+        return schema;
+    },
+    currency : function(name, value, schema) {
+        
+        // Applies a regex for mongo object ids
+        var pattern = "^[A-Z]{3}$";
+        
+        if(name.toUpperCase().indexOf("CURRENCY") != -1 && typeof value == "string" &&  new RegExp(pattern).test(value)) {
+            schema.pattern = pattern;
+        }
+        
+        return schema;
+    }
+}
+
+var rulesToApply = []; // TODO: Filter
+
+for(prop in availableRules) {
+    if(typeof availableRules[prop] === "function") {
+        rulesToApply.push(availableRules[prop]);
+    }
+}
+
+console.log("Starting processing...");
+
+function processFieldByType(fieldName, fieldValue) {
+
+    switch(typeof fieldValue){
+        case "string": 
+            return processString(fieldValue);
+        case "number": 
+            return processNumber(fieldValue);
+        case "boolean": 
+            return processBoolean(fieldValue);
+        case "object": 
+            if(Array.isArray(fieldValue)) {   
+                return processArray(fieldValue);
+            } else {
+                return processObject(fieldValue);
+            }
+        default:
+            console.log("Unknown type. Field: " + fieldName + ". Type: " + typeof fieldValue);
+    }
+    return null;
+}
+
+function applyRules(fieldName, fieldValue, fieldSchema) {
+    
+    for(var i=0;i<rulesToApply.length;i++) {
+        fieldSchema = rulesToApply[i](fieldName, fieldValue, fieldSchema);
+    }
+    
+    return fieldSchema;
+}
+
+function processField(fieldName, fieldValue) {
+    
+    return applyRules(fieldName, fieldValue, processFieldByType(fieldName, fieldValue))
+}
+
+function processString(str) {
+    // TODO: RegEx pattern
+    return {"type": "string"};
+}
+
+function processBoolean(bool) {
+    return {"type": "boolean"};
+}
+
+
+function processArray(arr) {
+    var sch =  {"type": "array"};
+    
+    // TODO: Support multiple types using anyOf
+    if(arr.length > 0) {
+        sch.items = {}
+        sch.items = processField("ArrayItem", arr[0]);
+    }
+    
+    return sch;
+}
+
+function processNumber(num) {
+    
+    var sch = {};
+    
+    //TODO: RegEx?
+    if(num.toString().indexOf(".") == -1) {
+        sch.type = "integer";
+    }
+    else {
+        sch.type = "number";
+    }
+        
+    return sch;
+}
+
+function processObject(obj) {
+    
+    
+    var objSch = {"type": "object", "properties": {}};
+    
+        
+    var propName; // To prevent recursive methods changing it
+    for(prop in obj) {
+        propName = prop;
+        objSch.properties[prop] = processField(prop, obj[prop]);
+    }
+       
+    
+    return objSch;
+}
+
+function process() {
+// Try to parse the input json
+  try {
+      var src = JSON.parse(document.getElementById('src').value);
+    
+    document.getElementById('src').value = JSON.stringify(src, null, 2);
+  }
+  catch (err) {
+      alert("Error while parsing input:" + err);
+  }
+
+  // Create the schema root object
+  var schema = { 
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "id": "http://YOUR_ROOT_URL/schemas/SCHEMA_NAME.json",
+      "type": "object"
+  }
+  var rootObj= processObject(src);
+  schema["properties"] = rootObj["properties"];
+
+  // Output the schema
+  var tgt = JSON.stringify(schema, null, 2);
+  console.log(tgt);
+  
+  document.getElementById('tgt').value = tgt;
+
+  console.log("Processing complete.");
+}
+</script>
+</html>

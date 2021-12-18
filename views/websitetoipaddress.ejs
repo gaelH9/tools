@@ -1,0 +1,80 @@
+<%-include('./partials/head'); %>
+  <body>
+    <%-include('./partials/navbar'); %>
+
+      <div class="container">
+          <h1 class="text-center">
+              Free Online Website to IP Address
+          </h1>
+          <form id="form">
+            <div class="form-group">
+                <label for="file">Enter Website Address:</label>
+                <input class="form-control" type="text" placeholder="google.com" id="address" required>
+            </div>
+            <div class="form-group">
+                <button id="button" class="btn btn-block btn-danger">
+                    Get IP Address
+                </button>
+            </div>
+        </form>
+        <div id="result"></div>
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script>
+$("#form").submit(function(e){
+
+e.preventDefault()
+
+$("#button").text("Finding Data Please Wait")
+
+  $("#button").prop("disabled","true")
+
+var address = $("#address").val()
+
+$.ajax({
+
+method:"POST",
+url:"/getipdetails",
+data:{address:address},
+success:function(data){
+var result = `
+
+<h3 class="alert alert-success text-center">${data.ip}</h3>
+          <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>IP Address</th>
+        <th>Country</th>
+        <th>Continent</th>
+        
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>${data.ip}</td>
+        <td>${data.data.country}</td>
+        <td>${data.data.continent}</td>
+
+      </tr>
+    </tbody>
+  </table>
+`
+
+$("#result").html(result)
+
+$("#address").val("")
+
+$("#button").text("Get IP Address")
+$("#button").prop("disabled",false);
+
+}
+
+})
+
+})
+</script>
+</html>

@@ -1,0 +1,286 @@
+!!! 5
+%head
+  %script{src: '/js/jquery-2.1.4.min.js'}
+  %script{src: '/js/highlight.pack.js'}
+  %script{src: '/js/bootstrap.js'}
+  %script{src: js_url}
+  %script{src: '/js/demo.js'}
+  %link{rel: 'stylesheet', type: 'text/css',  href: '/css/highlight.css'}
+  %link{rel: 'stylesheet', type: 'text/css',  href: '/css/demo.css'}
+
+%body
+  - locale = R18n.get.locale.code
+  %h1= R18n.t.demo.title
+  %h3= R18n.t.demo.shop
+  .payment-result
+  .panel.panel-default
+    .panel-body
+      .col-md-6
+        %img{src: '/img/cup.png', width: '280', class: 'cup'}
+      .col-md-6
+        .coffee-brand= R18n.t.demo.coffee_brand
+        %p.coffe-description= R18n.t.demo.coffee_brand_description
+        .price-title= R18n.t.demo.price
+        .price-amount $1.00
+        .instruction
+          .instruction-title= R18n.t.demo.instruction
+          %table
+            %tr
+              %td= R18n.t.demo.card_number
+              %td 4200 0000 0000 0000
+            %tr
+              %td= R18n.t.demo.card_holder
+              %td= test_data.card_holder
+            %tr
+              %td= R18n.t.demo.exp_date
+              %td #{test_data.succ_month}/25
+            %tr
+              %td= R18n.t.demo.cvc
+              %td= test_data.verification_value
+    .panel-footer
+      .text-center
+        .btn.btn-info{id: 'paymentLink', data: {type: 'overlay', locale: locale}}
+          = R18n.t.demo.buy_button
+
+  %h3= R18n.t.demo.how_it_works
+  .panel.panel-default
+    .panel-body
+      .get-token-title= R18n.t.demo.get_token
+      %p= R18n.t.demo.get_token_description
+      %form.form-horizontal{action: '/create_token', method: :post, id: 'create-token'}
+        %input.hidden{type: 'text', name: 'locale', value: locale}
+        .form-group
+          %label.control-label.col-sm-4{for: 'description'}= R18n.t.demo.description
+          .col-sm-6
+            %input.form-control{type: 'text', name: 'description',
+                                value: "#{R18n.t.demo.description_value}"}
+        .form-group
+          %label.control-label.col-sm-4{for: 'amount'}= R18n.t.demo.amount
+          .col-sm-6.order-amount
+            .amount-input
+              %input.form-control{type: 'text', name: 'amount', id: 'amount', value: '1'}
+            .currency-input
+              %select.form-control{type: 'text', name: 'currency', id: 'currency'}
+                - ['USD', 'BYN', 'RUB'].each do |currency|
+                  %option{name: currency, value: currency}="#{currency}"
+        .form-group
+          %label.control-label.col-sm-4{for: 'language'}= R18n.t.demo.language
+          .col-sm-6
+            %select.form-control{type: 'text', name: 'language'}
+              - supported_languages.each do |lang|
+                %option{value: lang, selected: locale == lang}= R18n.t.demo.send("language_#{lang}")
+        .form-group
+          %label.control-label.col-sm-4{for: 'customer_details'}= R18n.t.demo.customer_details
+          .col-sm-6.customer_details
+            .col-md-6
+              %input{type: 'checkbox', name: 'customer_details', checked: false}
+            .col-md-6
+              %input.get-token-btn.btn.btn-info{type: 'submit', value: "#{R18n.t.demo.get_token_button}"}
+
+      .create-token-result
+      .create-token-blocks
+        .response= R18n.t.demo.response_example
+        %pre.response-code
+          %code.json
+            :preserve
+              {
+                "checkout": {
+                  "token": "",
+                  "redirect_url": ""
+                }
+              }
+
+        .code-example-title= R18n.t.demo.code_examples
+        %ul#tabs.nav.nav-tabs
+          %li{role: 'presentation', class: 'active'}
+            %a{href: '#bash', data: {target: '#bash', toggle: 'tab'}} Bash
+          %li{role: 'presentation'}
+            %a{href: '#ruby', data: {target: '#ruby', toggle: 'tab'}} Ruby
+          %li{role: 'presentation'}
+            %a{href: '#php', data: {target: '#php', toggle: 'tab'}} PHP
+        .tab-content
+          %pre{role: 'tabpanel', class: 'tab-pane fade in active', id: 'bash'}
+            %code.diff
+              :preserve
+                curl #{checkout_url}/ctp/api/checkouts -u shopId:shopKey -H 'Content-type: application/json' -d '
+                {
+                  "checkout": {
+                    "order": {
+                      "amount": 1.00,
+                      "currency": "USD",
+                      "description": "Test Order"
+                    },
+                    "settings": {
+                      "decline_url": "http://www.example.com/decline",
+                      "fail_url": "http://www.example.com/fail",
+                      "notification_url": "http://www.example.com/notify",
+                      "success_url": "http://www.example.com/success"
+                    },
+                    "transaction_type": "payment",
+                    "version": 2
+                  }
+                }'
+          %pre{role: 'tabpanel', class: 'tab-pane fade', id: 'ruby'}
+            %code.ruby
+              :preserve
+                conn = Faraday.new(url: "#{checkout_url}") do |faraday|
+                  faraday.request     :json
+                  faraday.adapter     Faraday.default_adapter
+                  faraday.basic_auth  shopId, shopKey
+                  faraday.headers['Content-Type'] = 'application/json'
+                end
+
+                response = conn.post '/ctp/api/checkouts', create_token_params
+
+                def create_token_params
+                  {
+                    "checkout": {
+                      "order": {
+                        "amount": 1.00,
+                        "currency": "USD",
+                        "description": "Test Order"
+                      },
+                      "settings": {
+                        "decline_url": "http://www.example.com/decline",
+                        "fail_url": "http://www.example.com/fail",
+                        "notification_url": "http://www.example.com/notify",
+                        "success_url": "http://www.example.com/success"
+                      },
+                      "transaction_type": "payment",
+                      "version": 2
+                    }
+                  }
+                end
+          %pre{role: 'tabpanel', class: 'tab-pane fade', id: 'php'}
+            %code.php
+              :preserve
+                // In this example used guzzle - https://github.com/guzzle/guzzle
+                use GuzzleHttp\Client;
+
+                $GetTokenParams = {
+                  "checkout": {
+                    "order": {
+                      "amount": 1.00,
+                      "currency": "USD",
+                      "description": "Test Order"
+                    },
+                    "settings": {
+                      "decline_url": "http://www.example.com/decline",
+                      "fail_url": "http://www.example.com/fail",
+                      "notification_url": "http://www.example.com/notify",
+                      "success_url": "http://www.example.com/success"
+                    },
+                    "transaction_type": "payment",
+                    "version": 2
+                  }
+                };
+
+                $client = new Client([
+                  'base_uri' => "#{checkout_url}"
+                ]);
+
+                $response = $client->request('POST', '/ctp/api/checkouts', [
+                  'auth'    => ['shopId', 'shopKey' 'digest'],
+                  'headers' => ['Accept' => 'application/json'],
+                  'json'    => $GetTokenParams
+                ]);
+
+        .build-html= R18n.t.demo.build_html
+        %p= R18n.t.demo.build_html_description
+        %ul#tabs.nav.nav-tabs
+          %li{role: 'presentation', class: 'active'}
+            %a{href: '#overlay', data: {target: '#overlay', toggle: 'tab'}} Widget
+          %li{role: 'presentation'}
+            %a{href: '#redirect', data: {target: '#redirect', toggle: 'tab'}} Redirect
+        .tab-content
+          %pre{role: 'tabpanel', class: 'tab-pane fade in active', id: 'overlay'}
+            %code.html
+              :preserve
+                &lt;!DOCTYPE html&gt;
+                &lt;html&gt;
+                &lt;head&gt;
+                  &lt;title>Overlay iFrame payment form&lt;/title>
+                  &lt;script type="text/javascript" src="#{js_url}/begateway-1-latest.min.js"&gt;&lt;/script&gt;
+                &lt;/head&gt;
+                &lt;body style="width: 70%; margin: 10px auto;"&gt;
+                  &lt;h1&gt;Test shop&lt;/h1&gt;
+                  &lt;p>
+                    T-Shirt 5 EUR
+                  &lt;/p>
+                  &lt;a href="#" id="paymentLink"&gt;Buy it&lt;/a&gt;
+
+                &lt;script type="text/javascript"&gt;
+                  var options = {
+                    type: 'overlay',
+                    id: 'paymentLink',
+                    url: "#{checkout_url}/v2/checkout?token=2dace3c57d96d64a0026364c7bd26c627e7a96d8fef8e129d45b2ebd2864db1c",
+                    style: "",
+                    size: { width: 400, height: 480 }
+                  };
+
+                  var pf = new BeGateway(options);
+                  pf.buildForm();
+                &lt;/script&gt;
+
+                &lt;/body&gt;
+                &lt;/html&gt;
+          %pre{role: 'tabpanel', class: 'tab-pane fade', id: 'inline'}
+            %code.html
+              :preserve
+                &lt;!DOCTYPE html&gt;
+                &lt;html&gt;
+                &lt;head&gt;
+                  &lt;title&gt;Inline iFrame payment form&lt;/title&gt;
+                  &lt;script type="text/javascript" src="#{js_url}/begateway-1-latest.min.js"&gt;&lt;/script&gt;
+                &lt;/head&gt;
+                &lt;body style="width: 70%; margin: 10px auto;"&gt;
+                  &lt;h1&gt;Test shop&lt;/h1&gt;
+                  &lt;p&gt;
+                    T-Shirt 5 EUR
+                  &lt;/p&gt;
+                  &lt;div id="paymentForm">&lt;/div&gt;
+
+                &lt;script type="text/javascript"&gt;
+
+                  var options = {
+                    type: 'inline',
+                    id: 'paymentForm',
+                    url: "#{checkout_url}/v2/checkout?token=2dace3c57d96d64a0026364c7bd26c627e7a96d8fef8e129d45b2ebd2864db1c",
+                    style: "",
+                    size: { width: 350, height: 350 }
+                  };
+                  var pf = new BeGateway(options);
+                  pf.buildForm();
+                &lt;/script&gt;
+
+                &lt;/body&gt;
+                &lt;/html&gt;
+          %pre{role: 'tabpanel', class: 'tab-pane fade', id: 'redirect'}
+            %code.html
+              :preserve
+                &lt;!DOCTYPE html&gt;
+                &lt;html&gt;
+                &lt;head&gt;
+                  &lt;title&gt;Payment on payment page&lt;/title&gt;
+                &lt;/head&gt;
+                &lt;body style="width: 70%; margin: 10px auto;"&gt;
+                  &lt;a href="#{checkout_url}/v2/checkout?token=2dace3c57d96d64a0026364c7bd26c627e7a96d8fef8e129d45b2ebd2864db1c"&gt;Pay on payment page&lt;/a&gt;
+                &lt;/body&gt;
+                &lt;/html&gt;
+
+    #paymentForm
+      .inline-iframe
+        .coffee-brand= R18n.t.demo.coffee_brand
+        %p.coffe-description= R18n.t.demo.coffee_brand_description
+        .price-title= R18n.t.demo.price
+        .price-amount $1.00
+    .panel-footer.second
+      .text-center
+        %input.btn.btn-info.overlay{type: 'submit', id: 'paymentButton', data: {type: 'overlay'},
+                                    value: "#{R18n.t.demo.buy_button}"}
+
+        %input.btn.btn-info.inline{type: 'submit', id: 'paymentForm', data: {type: 'inline'},
+                                   value: "#{R18n.t.demo.buy_button}"}
+
+        %input.btn.btn-info.redirect{type: 'submit', id: 'redirectButton',
+                                     value: "#{R18n.t.demo.buy_button}"}

@@ -1,0 +1,144 @@
+<%-include('./partials/head'); %>
+<body>
+  <%-include('./partials/navbar'); %>
+
+  <div class="container">
+    <h1 class="text-center">
+        PNG to Windows ICON Converter
+    </h1>
+      <form id="form">
+      <div class="form-group">
+          <input class="form-control" type="file" id="upload-input" accept=".png" required>
+      </div>
+      <div class="progress">
+        <div class="progress-bar" role="progressbar"></div>
+      </div>
+      <div class="form-group">
+        <label for="format">Icon Size:</label>
+        <select class="form-control" name="size" id="size">
+            <option value="16" selected>16x16</option>
+            <option value="24">24x24</option>
+            <option value="29">29x29</option>
+            <option value="32">32x32</option>
+            <option value="44">44x44</option>
+            <option value="48">48x48</option>
+            <option value="50">50x50</option>
+            <option value="57">57x57</option>
+            <option value="58">58x58</option>
+            <option value="64">64x64</option>
+            <option value="72">72x72</option>
+            <option value="96">96x96</option>
+            <option value="100">100x100</option>
+            <option value="114">114x114</option>
+            <option value="128">128x128</option>
+            <option value="144">144x144</option>
+            <option value="256" selected>256x256</option>
+            <option value="512">512x512</option>
+            <option value="1024">1024x1024</option>
+        </select>
+    </div>
+      <div class="form-group">
+          <button id="button" class="btn btn-block btn-danger">
+              Download ICON File
+          </button>
+      </div>
+      </form>
+  
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script>
+    var files
+    var size = 256
+      $('#form').on('submit', function (e){
+        e.preventDefault()
+    //$('#upload-input').click();
+    $('.progress-bar').text('0%');
+    $("#button").text("Uploading File")
+    $("#button").prop("disabled","true")
+    $('.progress-bar').width('0%');
+    convertFile()
+});
+$('#upload-input').on('change', function(){
+  files = $(this).get(0).files;
+var fileExtension = ['png'];
+        if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+           $(this).val("") 
+    
+swal ( "Oops" ,"Please Upload a PNG File",  "error" )
+
+        }
+})
+
+$("#size").change(function(){
+        size= $(this).children("option:selected").val();
+    });
+
+function convertFile(){
+  if (files.length > 0){
+    // create a FormData object which will be sent as the data payload in the
+    // AJAX request
+    var formData = new FormData();
+    // loop through all the selected files and add them to the formData object
+    for (var i = 0; i < files.length; i++) {
+      var file = files[i];
+      // add the files to formData object for the data payload
+      formData.append('file', file, file.name);
+    }
+    console.log(formData)
+    var formdata2 = new FormData()
+    $.ajax({
+      url: '/uploadpngtoico',
+      type: 'POST',
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: function(data){
+          var data2 = {path:data.path,size:size}
+          console.log('upload successful!\n' + data.path);
+          $("#button").text("File Uploaded Now Processing")
+          $("#button").prop("disabled",true);
+          formdata2.append('path',data.path)
+          $.ajax({
+              url:'/pngtoico',
+              type:'POST',
+              data:JSON.stringify(data2),
+              contentType: "application/json",
+              dataType:"json",
+      success:function(data){
+
+          window.open('/download?path='+data.path)
+          $("#button").text("Upload File")
+          $("#button").prop("disabled",false);
+          location.reload();
+      }
+          })
+      },
+      xhr: function() {
+        // create an XMLHttpRequest
+        var xhr = new XMLHttpRequest();
+        // listen to the 'progress' event
+        xhr.upload.addEventListener('progress', function(evt) {
+          if (evt.lengthComputable) {
+            // calculate the percentage of upload completed
+            var percentComplete = evt.loaded / evt.total;
+            percentComplete = parseInt(percentComplete * 100);
+            // update the Bootstrap progress bar with the new percentage
+            $('.progress-bar').text(percentComplete + '%');
+            $('.progress-bar').width(percentComplete + '%');
+            // once the upload reaches 100%, set the progress bar text to done
+            if (percentComplete === 100) {
+              $('.progress-bar').html('Done');
+            }
+          }
+        }, false);
+        return xhr;
+      }
+    });
+  }
+}
+  </script>
+</html>

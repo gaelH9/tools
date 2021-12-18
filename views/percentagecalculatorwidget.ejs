@@ -1,0 +1,84 @@
+<%-include('./partials/head'); %>
+<body>
+  <%-include('./partials/navbar'); %>
+
+<style>
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+.percentage-calc {
+	background-color: #f0f8ff;
+	padding: 50px 25px;
+	border-radius: 2px;
+	width: 460px;
+	max-width:100%;
+	text-align: center;
+}
+.number {
+	padding: 15px;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	width: 100px;
+	margin: 0 5px;
+	text-align: center;
+	font-size: 1.6rem;
+}
+
+.number:focus {
+	outline: none;
+}
+
+.percent {
+	width: 140px;
+}
+
+</style>
+
+      <div class="container">
+<h2 class="text-center">Percentage Calculator Widget</h2>
+          <div class="percentage-calc">
+		<input type="number" class="number value">%
+		<span>of</span>
+		<input type="number" class="number percent"> =
+		<span class="result">?</span>
+</div>
+
+<link href="https://fonts.googleapis.com/css2?family=Sintony&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+        </form>
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+const numbers = document.querySelectorAll(".number");
+const resultText = document.querySelector(".result");
+let value, percent; // must be declared outside of the foreach
+
+numbers.forEach((number) => {
+	number.addEventListener("input", () => {
+		if (number.classList.contains("value")) {
+			value = parseFloat(number.value);
+		}
+
+		if (number.classList.contains("percent")) {
+			percent = parseFloat(number.value);
+		}
+
+		if ((value || value == 0) && (percent || percent == 0)) {
+			resultText.innerHTML = calculate(value, percent);
+		}
+	});
+});
+
+function calculate(val, percent) {
+	return (val * percent) / 100;
+}
+</script>
+</html>

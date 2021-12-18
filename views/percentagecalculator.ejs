@@ -1,0 +1,118 @@
+<%-include('./partials/head'); %>
+<body>
+  <%-include('./partials/navbar'); %>
+
+<style>
+
+ h1, span, a, a:hover, label {
+	 color: #fff;
+	 text-decoration: none;
+	 position: relative;
+	 padding-bottom: 5px;
+}
+ .row > a:before {
+	 content: "";
+	 position: absolute;
+	 width: 100%;
+	 height: 2px;
+	 bottom: 0;
+	 left: 0;
+	 background-color: #fff;
+	 visibility: hidden;
+	 -webkit-transform: scaleX(0);
+	 transform: scaleX(0);
+	 -webkit-transition: all 0.3s ease-in-out 0s;
+	 transition: all 0.3s ease-in-out 0s;
+}
+ div > a:hover:before {
+	 visibility: visible;
+	 -webkit-transform: scaleX(1);
+	 transform: scaleX(1);
+}
+ input {
+	 display: block;
+}
+ .final {
+	 border-left: 1px solid #fff;
+}
+ .margin-top {
+	 margin-top: 80px;
+}
+ 
+</style>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
+<div class="container" ng-app="percentApp">
+  <div class="row" ng-controller="HeaderCtrl">
+    <h1>{{header}}</h1>
+    <a href="http://www.petrusrex.com/" target="_blank"> {{mySite}}</a>
+    <hr>
+  </div>
+  <div class="row" ng-controller="CalcCtrl">
+    <div class="col-sm-2 col-xs-12">
+      <!-- Percent Value -->
+      <label for="percent">Percent Value (%) </label>
+      <input type="text" id="percent" ng-change="calcValue()" ng-model="percentCalc.percentValW">
+    </div>
+    <div class="col-sm-1 col-sm-12">
+      <h1 class="center-block">Of</h1>
+    </div>
+    <div class="col-sm-2">
+      <label for="value">Number </label>
+      <!-- Numeric Value -->
+      <input type="text" id="Value" ng-change="calcValue()" ng-model="percentCalc.numericVal">
+    </div>
+    <div class="col-sm-1 col-xs-12">
+      <h1>is</h1>
+    </div>
+    <div class="col-sm-1 col-xs-12 final">
+      <h1>{{percentCalc.finalValue}}</h1>
+    </div>
+  </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.14/angular.min.js"></script>
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+var app = angular.module('percentApp', []);
+
+app.controller('HeaderCtrl', function($scope){
+  $scope.header="Percentage Calculator" ;
+  $scope.mySite="Petrus Rex"
+});
+
+app.controller('CalcCtrl', function($scope){
+  $scope.percentCalc = {
+    numericVal: 0,
+    percentValW: 0,
+    percentValDec: 0,
+    finalValue: 0
+  };
+  $scope.img = 'https://www.dropbox.com/s/7pd2h61lwsi4imj/petrus-rex-crest.png?raw=1/';
+  
+    var convertPercent = function(){
+      var percentNum = $scope.percentCalc.percentValW;
+      var percentValDec = $scope.percentCalc.percentValDec;
+        $scope.percentCalc.percentValDec = parseFloat(percentNum) / 100.0;
+    };
+    $scope.$watch('percentCalc.percentValW', convertPercent);
+  
+    var calcValue = function(){
+      $scope.percentCalc.finalValue = $scope.percentCalc.percentValDec * $scope.percentCalc.numericVal;
+    };
+  
+    $scope.$watch('percentCalc.percentValW + percentCalc.numericVal', calcValue);
+
+  });
+
+app.controller('ImgCtrl', function($scope){
+  $scope.img='https://www.dropbox.com/s/7pd2h61lwsi4imj/petrus-rex-crest.png?raw=1' 
+});
+</script>
+</html>

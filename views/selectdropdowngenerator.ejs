@@ -1,0 +1,105 @@
+<%-include('./partials/head'); %>
+  <body>
+    <%-include('./partials/navbar'); %>
+      <div class="container">
+      <h1 class="text-center">Select Option DropDown List Generator</h1>
+      <form id="form">
+          <div class="form-group">
+              <label for="options">Options (One Per Line)</label>
+              <textarea name="" class="form-control" id="options" cols="30" rows="10" required placeholder="Enter Options"></textarea>
+          </div>
+          <div class="form-group">
+              <button class="btn btn-danger btn-block">
+                  Generate Select List
+              </button>
+          </div>           
+      </form>
+      <div id="preview"></div>
+          <h2 class="text-center">Source Code</h2>
+          <div class="form-group">
+          <label for="output">Output HTML:</label>
+          <textarea class="form-control" rows="10" cols="30" id="result" placeholder="Output HTML Code"></textarea>
+           </div>
+<div class="form-group">
+          <button onclick="copytoclipboard()" class="btn btn-primary btn-block">
+            Copy to Clipboard
+          </button>
+        </div>
+           <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <script>
+      var result=``
+
+      $("#form").submit(function(e){
+          e.preventDefault()
+
+          var options = $('#options').val().split('\n');
+
+          result+= `
+          
+  <label for="sel1">Select list:</label>
+  <select id="sel1">
+          `
+
+          options.forEach(option => {
+             result+= `<option value="${option}">${option}</option>` 
+          });
+
+          result+=`
+          </select>
+          
+          `
+
+          $("#preview").html(result)
+
+          $("#result").val(format(result.trim()))
+
+
+
+      })
+      function format(html) {
+    var tab = '\t';
+    var result = '';
+    var indent= '';
+
+    html.split(/>\s*</).forEach(function(element) {
+        if (element.match( /^\/\w/ )) {
+            indent = indent.substring(tab.length);
+        }
+
+        result += indent + '<' + element + '>\r\n';
+
+        if (element.match( /^<?\w[^>]*[^\/]$/ ) && !element.startsWith("input")  ) { 
+            indent += tab;              
+        }
+    });
+
+    return result.substring(1, result.length-3);
+}
+
+function copytoclipboard() {
+      /* Get the text field */
+      var copyText = document.getElementById("result");
+
+      /* Select the text field */
+      copyText.select();
+      copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+
+      /* Copy the text inside the text field */
+      document.execCommand("copy");
+
+      swal({
+  title: "Good job!",
+  text: "HTML Code Successfully Copied",
+  icon: "success",
+});
+
+     
+    }
+  </script>
+</html>

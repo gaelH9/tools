@@ -1,0 +1,162 @@
+<%-include('./partials/head'); %>
+  <body>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui-css@2.2.12/semantic.min.css"/>
+<style>
+ .ui.header {
+	 color: #000;
+	 margin-bottom: 0;
+}
+ .desc {
+	 color: black;
+	 margin-bottom: 2em;
+}
+ .container {
+	 padding: 2em 0;
+}
+ .ui.card {
+	 width: 100%;
+}
+ .content-result {
+	 min-height: 330px;
+}
+ .result .placeholder {
+	 padding-top: 100px;
+	 font-size: 30px;
+	 line-height: 1;
+	 color: black;
+	 text-align: center;
+}
+ .result .placeholder span {
+	 font-size: 15px;
+}
+ .result .status {
+	 margin-top: 5px;
+}
+ .result progress {
+	 width: 100%;
+}
+ .result .ui.message {
+	 margin-top: 2rem;
+}
+ .result .ui.message pre {
+	 white-space: pre-wrap;
+}
+ 
+</style>
+    <%-include('./partials/navbar'); %>
+      <div class="container">
+          <h1 class="text-center">
+              Extract Text or OCR From Image Online
+          </h1>
+            <div class="ui container">  
+  <h1 class="ui header">Image to Text</h1>
+  <div class="desc">Extract all the text from a selected image using tesseract OCR engine.</div>
+  
+  <div class="ui grid stackable">
+    <div class="row">
+      
+      <div class="eight wide column">
+        <div class="ui card">
+          <div class="content">
+            <h2 class="header">Input</h2>
+          </div>
+          <div class="content">
+            <img id="image" class="ui centered medium image" src="http://www.brainstormerbingo.com/Images/upload-empty.png"/>
+          </div>
+          <div class="content extra">
+            <input id="file" type="file" onchange="proccess(window.lastFile=this.files[0])">  
+          </div>
+        </div>
+      </div>
+        
+      <div class="eight wide column">
+        <div class="ui card">
+          <div class="content">
+            <h2 class="header">Output</h2>
+          </div>
+          <div class="content content-result">
+            <div class='ui grid'>
+              <div class='row result'>
+                <div class="column placeholder">
+                  No Output <br/>
+                  <span>Choose a file to start</span>    
+                </div>
+              </div>
+            </div>  
+          </div>
+          <div class="content extra">
+            <small>Powered by <aa href="https://github.com/naptha/tesseract.js#tesseractjs">Tesseract JS</aa></small>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+ 
+</div>
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.rawgit.com/naptha/tesseract.js/1.0.10/dist/tesseract.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/semantic-ui-css@2.2.12/semantic.min.js"></script>
+<script>
+/**
+* main proccess function
+*/
+function proccess(file){
+  $(".result").html("");
+  
+  //Preview Image
+  var src = (window.URL ? URL : webkitURL).createObjectURL(file);
+  $("#image").attr("src", src);
+  
+  //Proccess Image
+  Tesseract.recognize(file)
+  .progress(function(data){
+    console.log(data);
+    progress(data);
+  })
+  .then(function(data){
+    console.log(data);
+    result(data)
+  })
+  
+}
+
+/**
+* progress function
+*/
+function progress(packet){
+  var r = $(".result");
+  
+  if(r.length > 0 && r.find(".status").last().html() == packet.status){
+    if('progress' in packet) {
+      r.find("progress").last().val(packet.progress);
+    }
+    
+  } else {    
+    var tStatus = "<div class='status ten wide column'>" + packet.status +"</div>";
+    var tProgress = "<div class='six wide column'>" + (typeof packet.progress == "undefined" ? "" : ("<progress value='" + packet.progress + "' max='1'>")) +"</div>";
+                                                                                                      
+    r.append(tStatus + tProgress);
+  }
+}
+
+/**
+* reporting function
+*/
+function result(data){
+  var r = $(".result");
+  //r.html("");
+  r.append(
+    "<div class='sixteen wide column output'>success" +
+    "<div class='ui message'><pre>" + data.text +"</pre></div>" + 
+    "</div>"
+  );
+  
+}
+</script>
+</html>

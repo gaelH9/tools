@@ -1,0 +1,53 @@
+<%-include('./partials/head'); %>
+  <body>
+    <%-include('./partials/navbar'); %>
+
+      <div class="container">
+          <h1 class="text-center">
+              Free Online IP Address Validator
+          </h1>
+          <form id="form">
+            <div class="form-group">
+                <label for="file">Enter IP Address:</label>
+                <input class="form-control" type="text" placeholder="1.1.1.1" id="address" required>
+            </div>
+            <div class="form-group">
+                <button id="button" class="btn btn-block btn-danger">
+                    Validate IP Address
+                </button>
+            </div>
+        </form>
+        <div id="result"></div>
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script>
+$("#form").submit(function(e){
+
+e.preventDefault()
+
+var address = $("#address").val()
+
+$.ajax({
+
+method:"POST",
+url:"/validateip",
+data:{address:address},
+success:function(data){
+if(data.message == "Valid IP Address"){
+$("#result").html(`<h2 class="alert alert-success text-center">${data.message}</h2>`)
+$("#address").val("")
+}else{
+$("#result").html(`<h2 class="alert alert-danger text-center">${data.message}</h2>`)
+$("#address").val("")
+}
+}
+
+})
+
+})
+</script>
+</html>
