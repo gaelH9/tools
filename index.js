@@ -1,8 +1,8 @@
 const express = require("express");
 
-const API_KEY = "5EjcC1fqxLi5THULGju4fhLM"
+const API_KEY = "LeGWg1XGr7LRFLe8pkqkgaEQ"
 
-const textToImage = require('text-to-image');
+//const textToImage = require('text-to-image');
 
 const ImageDataURI = require('image-data-uri');
 
@@ -139,7 +139,7 @@ var rimraf = require('rimraf')
 
 var uploadsDir = __dirname + '/public/uploads';
 
-fs.readdir(uploadsDir, function(err, files) {
+/*fs.readdir(uploadsDir, function(err, files) {
   files.forEach(function(file, index) {
     fs.stat(path.join(uploadsDir, file), function(err, stat) {
       var endTime, now;
@@ -158,7 +158,7 @@ fs.readdir(uploadsDir, function(err, files) {
       }
     });
   });
-});
+});*/
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -223,7 +223,7 @@ const audioFilter = function (req, file, callback) {
   callback(null, true);
 };
 
-var maxSize = 200 * 1024 * 1024
+var maxSize = 10000 * 1024 * 1024
 
 var videotomp3upload = multer({ storage: storage,limits:{fileSize:maxSize},fileFilter: videoFilter });
 var imageconverterupload = multer({
@@ -267,12 +267,16 @@ app.get("/", (req, res) => {
   res.render("index",{title:"Free Media Tools"});
 });
 
+app.get("/addsubtitlestovideo", (req, res) => {
+  res.render("addsubtitlestovideo",{title:"FREE Tool to Add Subtitles (.SRT) File to Video File Online - Free Media Tools"});
+});
+
 app.get("/videotomp3", (req, res) => {
   res.render("videotomp3",{title:"Video to Mp3 Online - Free Media Tools"});
 });
 
 
-app.get("/texttoimage", (req, res) => {
+/*app.get("/texttoimage", (req, res) => {
   res.render("texttoimage",{title:"FREE Text to JPG/PNG Image Online Tool  - Free Media Tools"});
 });
 
@@ -299,12 +303,21 @@ app.post('/texttoimage',(req,res) => {
       res.download("output88.png",() => {
 
       })
-})
+})*/
 
 app.get('/capitalfinder',(req,res) => {
 
 
 res.render("capitalfinder",{title:"FREE World Countries Capital Finder Online App - Free Media Tools "})
+
+
+})
+
+
+app.get('/blurvideo',(req,res) => {
+
+
+res.render("blurvideo",{title:"FREE Blur Video Online Tool to Blur Background Portion of Videos - Free Media Tools "})
 
 
 })
@@ -652,6 +665,27 @@ app.post('/videotomp3',(req,res) => {
 
   exec(`ffmpeg -i ${req.body.path} -preset ultrafast ${output}`,(err,stdout,stderr) => {
      if(err){
+         res.json({
+             error:"some error takes place"
+         })
+     }
+     res.json({
+         path:output
+     })
+  })
+});
+
+
+app.post('/blurvideo',(req,res) => {
+  console.log(req.body)
+
+  output = Date.now() + "output" + path.extname(req.body.path)
+
+  console.log(output)
+
+  exec(`ffmpeg -i ${req.body.path} -preset ultrafast -filter_complex "[0:v]crop=${req.body.width}:${req.body.height}:${req.body.width}:${req.body.height},boxblur=${req.body.power}[fg];[0:v][fg]overlay=${req.body.x}:${req.body.y}[v]" -map "[v]" ${output}`,(err,stdout,stderr) => {
+     if(err){
+         console.log(err)
          res.json({
              error:"some error takes place"
          })
@@ -1159,6 +1193,8 @@ app.post("/compressimage", (req, res) => {
       
       });
 });
+
+
 
 var changevideoresolutionupload = multer({
   storage: storage,
@@ -4035,6 +4071,142 @@ res.render('pptxtojson',{title:'FREE PPTX|PPT Powerpoint File to JSON Online Con
 
 })
 
+app.get('/textfiletospeech',(req,res) => {
+
+res.render('textfiletoaudio',{title:'FREE Text File to Speech Audio File Online Tool - FreeMediaTools.com'})
+
+})
+
+const textfileFilter = function (req, file, callback) {
+  var ext = path.extname(file.originalname);
+  if (
+    ext !== ".txt"
+  ) {
+    return callback("This Extension is not supported");
+  }
+  callback(null, true);
+};
+
+var textfiletospeechupload = multer({
+  storage: storage,
+  fileFilter: textfileFilter
+}).single('file');
+
+
+app.post('/uploadtextfile',(req,res) => {
+
+textfiletospeechupload(req,res,(err) => {
+
+console.log(req.file)
+
+res.json({
+
+path:req.file.path
+
+})
+
+
+})
+
+})
+
+
+
+const srtfilefilter = function (req, file, callback) {
+  var ext = path.extname(file.originalname);
+  if (
+    ext !== ".srt"
+  ) {
+    return callback("This Extension is not supported");
+  }
+  callback(null, true);
+};
+
+var srtfileupload = multer({
+  storage: storage,
+  fileFilter: textfileFilter
+}).single("file");
+
+
+app.post('/uploadsrtfile',(req,res) => {
+
+textfiletospeechupload(req,res,(err) => {
+
+console.log(req.file)
+
+res.json({
+
+path:req.file.path
+
+})
+
+
+})
+
+})
+
+
+
+
+app.post('/addsubtitletovideo',(req,res) => {
+
+output = Date.now() + "output." + req.body.videoPath;
+
+
+  var command = `ffmpeg -i ${req.body.videoPath} -vf subtitles={req.body.srtPath} ${output}`;
+
+  exec(
+    command,
+
+    (err, stdout, stderr) => {
+      if (err) {
+        console.log(err);
+      }
+      console.log(stdout);
+      res.json({
+        path: output,
+      });
+    }
+  );
+
+
+})
+
+
+
+
+
+app.post('/textfiletospeech',(req,res) => {
+
+output = Date.now() + "output." + req.body.format;
+
+console.log(req.body.path)
+
+console.log(req.body.format)
+
+
+  var command = `ffmpeg -f lavfi -i "flite=textfile='${req.body.path}'" ${output}`;
+
+  console.log(command);
+
+  exec(
+    command,
+
+    (err, stdout, stderr) => {
+      if (err) {
+        console.log(err);
+      }
+      console.log(stdout);
+      res.json({
+        path: output,
+      });
+    }
+  );
+
+
+})
+
+
 
 const pptxtopdfFilter = function (req, file, callback) {
   var ext = path.extname(file.originalname);
@@ -5080,7 +5252,7 @@ baseurl:parsed.domain
 
 
 })
-const channelinfo = require('youtube-channel-info')
+/*const channelinfo = require('youtube-channel-info')
 
 app.get('/youtubechannelinfo',(req,res) =>{
     res.render('youtubechannelinfo',{title:"FREE Youtube Channel Information Online Tool - Find Earnings Views Subscribers of Youtube Channel Online - FreeMediaTools.com"})
@@ -5097,7 +5269,7 @@ app.post("/getchannelinfo",(req,res) => {
             stats:channelStats
         }); 
       })
-})
+})*/
 
 app.get('/selectdropdowngenerator',(req,res) => {
 
@@ -5458,7 +5630,7 @@ app.post('/uploadcsstoscss',(req,res) => {
   });
 })
 
-var cssConverter = require('styleflux')
+/*var cssConverter = require('styleflux')
 
 app.post('/csstoscss',(req,res) => {
 
@@ -5476,7 +5648,7 @@ app.post('/csstoscss',(req,res) => {
 
 app.get('/csstoscss',(req,res) => {
   res.render('csstoscss',{title:'FREE CSS to SCSS (SASS) Online Converter Tool - Best CSS to SCSS Converter - FreeMediaTools.com'})
-})
+})*/
 
 app.post('/uploadcsstojavascript',(req,res) => {
   csstoscssupload(req, res, function (err) {

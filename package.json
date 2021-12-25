@@ -73,15 +73,12 @@
     "sanitize-filename": "^1.6.3",
     "sharp": "^0.26.1",
     "sitemap-generator": "^8.5.1",
-    "styleflux": "^1.2.0",
     "suggestion": "^2.1.2",
-    "text-to-image": "^4.1.1",
     "user-instagram": "^2.1.9",
     "videoshow": "^0.1.12",
     "webp-converter": "^2.3.0",
     "whois-json": "^2.0.4",
-    "xml-formatter": "^2.4.0",
-    "youtube-channel-info": "^1.0.0"
+    "xml-formatter": "^2.4.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"
