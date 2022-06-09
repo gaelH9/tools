@@ -1,0 +1,60 @@
+<%-include('./partials/head'); %>
+  <body>
+    <%-include('./partials/navbar'); %>
+    <div class="container">
+      <h1 class="text-center">Twitter Profile Pic Downloader</h1>
+      <form id="form">
+        <div class="form-group">
+          <label for="username">Enter Twitter Username:</label>
+          <input
+            type="text"
+            id="username"
+            placeholder="Enter Twitter Username"
+            required
+            class="form-control"
+          />
+        </div>
+        <div class="form-group">
+          <button class="btn btn-danger btn-block">Download Image</button>
+        </div>
+      </form>
+ <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+    </div>
+  </body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script>
+    $("#form").submit((e) => {
+      e.preventDefault();
+
+      let username = $("#username").val();
+
+      let url =
+        "https://twitter-profile-pic.jsoxford.com/" +
+        username +
+        "?size=original";
+
+      forceDownload(url, "image.jpg");
+
+      $("#username").val("");
+    });
+
+    function forceDownload(url, fileName) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", url, true);
+      xhr.responseType = "blob";
+      xhr.onload = function () {
+        var urlCreator = window.URL || window.webkitURL;
+        var imageUrl = urlCreator.createObjectURL(this.response);
+        var tag = document.createElement("a");
+        tag.href = imageUrl;
+        tag.download = fileName;
+        document.body.appendChild(tag);
+        tag.click();
+        document.body.removeChild(tag);
+      };
+      xhr.send();
+    }
+  </script>
+</html>

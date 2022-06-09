@@ -1,0 +1,32 @@
+<%-include('./partials/head'); %>
+  <body>
+    <%-include('./partials/navbar'); %>
+
+      <div class="container">
+         <h1 class="text-center">
+        Your File is Ready (Link will Expire After 24 Hours)
+      </h1>
+      <br><br>
+      <h2 class="text-center">File Info</h2>
+      <br>
+      <h3 class="text-center"><%=path%></h3>
+      <br><br>
+      <input type="text" value="<%=path%>" id="path" hidden />
+      <div class="form-group container">
+        <button onclick="download()" class="btn btn-danger btn-block">
+          Download File
+        </button>
+      </div>
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script>
+    function download() {
+      window.open("/downloadfiletransfer?path=/public/uploads/" + $("#path").val());
+      location.reload();
+    }
+  </script>
+</html>

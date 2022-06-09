@@ -1,0 +1,73 @@
+<%-include('./partials/head'); %>
+<body>
+  <%-include('./partials/navbar'); %>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"/>
+<div class="container">
+        <div id="container">
+    <h1 class="text-center">Related Words Generator</h1>
+    <div class="form-group container">
+      <label for="word">Enter any Topic or Word:</label>
+      <input
+        type="text"
+        id="input"
+        required
+        placeholder="Enter Word"
+        class="form-control"
+      />
+    </div>
+    <div class="form-group container">
+      <button onclick="findrelatedwords()" class="btn btn-danger btn-block">
+        Find Related Words
+      </button>
+    </div>
+    <div class="form-group container">
+      <a id="button" class="btn btn-success btn-block">
+        Clear TextArea
+      </a>
+    </div>
+    <div class="form-group container">
+      <label for="words">Related Words:</label>
+      <textarea class="form-control" id="words" cols="30" rows="10"></textarea>
+    </div>
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+  var word = "";
+
+  $("#input").change(function(){
+    word = $(this).val()
+    //$("#words").val("")
+  })
+
+  function findrelatedwords() {
+    console.log(word);
+    $.ajax({
+      method: "GET",
+      url: "https://api.datamuse.com/words?rel_trg=" + word,
+      success: function (words) {
+        console.log(words);
+        words.forEach((word) => {
+          $("#words").append(word.word);
+          $("#words").append("\n");
+          $("#input").val("")
+        });
+      },
+      error: function (error) {
+        console.log(error);
+        $("#input").val("")
+      },
+    });
+  }
+
+  $("#button").click(() => {
+
+    $("#words").val("")
+    location.reload()
+
+  })
+</script>
+</html>

@@ -1,0 +1,55 @@
+<%-include('./partials/head'); %>
+  <body>
+    <%-include('./partials/navbar'); %>
+      <div class="container">
+          <h1 class="text-center">
+            Extract Color Name From Hexadecimal Color Code
+        </h1>
+        <form id="form">
+            <div class="input-group mb-3 container">
+  <input class="form-control" type="text" pattern="^#+([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$" value="#bada55" id="hexcolor"></input>
+<input class="form-control" type="color" id="colorpicker" name="color" pattern="^#+([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$" value="#bada55"> 
+</div>
+        </form>
+        <br><br>
+
+            <h1 class="text-center" id="result">The Color Name is : </h1>
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script>
+    $('#colorpicker').on('input', function() {
+	$('#hexcolor').val(this.value);
+
+    extractcolorname(this.value)
+
+    // ajax request to the node.js server
+});
+$('#hexcolor').on('input', function() {
+  $('#colorpicker').val(this.value);
+});
+
+function extractcolorname(hexcolor){
+    $.ajax({
+        method:'POST',
+        url:'/extractcolorname',
+        data:{colorcode:hexcolor},
+        success:function(data){
+            console.log(data)
+
+            $("#result").html("The Color Name is: " + data.colorname)
+        },
+        error:function(error){
+            console.log(error)
+        }
+    })
+}
+
+extractcolorname($("#hexcolor").val())
+
+// look for the change event
+</script>
+</html>

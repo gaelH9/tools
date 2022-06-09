@@ -1,8 +1,28 @@
 const express = require("express");
 
+const cheerio = require("cheerio");
+
+const requestpromise = require("request-promise");
+
+const ytrend = require("@freetube/yt-trending-scraper");
+
 const API_KEY = "LeGWg1XGr7LRFLe8pkqkgaEQ"
 
 //const textToImage = require('text-to-image');
+
+const { channelId } = require('@gonetone/get-youtube-id-by-url')
+
+const youthumb = require('youtube-thumbnails');
+
+const downloadthumbnail = require("image-downloader");
+
+const request = require("request")
+
+const getVideoId = require('get-video-id');
+
+const youtubeThumbnail = require("youtube-thumbnail");
+
+const userinstagram = require('user-instagram')
 
 const ImageDataURI = require('image-data-uri');
 
@@ -276,6 +296,57 @@ app.get("/videotomp3", (req, res) => {
 });
 
 
+app.get("/youtubethumbnaildownloader", (req, res) => {
+  res.render("youtubethumbnaildownloader",{title:"FREE Youtube Video Thumbnail Downloader From URL Online Tool - Free Media Tools"});
+});
+
+
+
+app.post('/getvideothumbnail', (req, res) => {
+    // url
+
+    let url = req.body.url
+
+    let quality = req.body.quality
+
+    const thumbnail = youtubeThumbnail(url)
+
+    const { id } = getVideoId(url);
+
+    const thumbnailpath = __dirname + "/"+ Date.now() + "image.jpg"
+
+    const options = {
+  url: "https://img.youtube.com/vi/" + id + "/maxresdefault.jpg",
+  dest:thumbnailpath, // will be saved to /path/to/dest/image.jpg
+};
+
+downloadthumbnail
+  .image(options)
+  .then(({ filename }) => {
+    console.log("Saved to", filename); // saved to /path/to/dest/image.jpg
+
+    res.download(thumbnailpath,() => {
+      console.log("done")
+   })
+  })
+  .catch((err) => console.error(err));
+
+
+    
+})
+
+
+
+var download = function (uri, filename, callback) {
+  request.head(uri, function (err, res, body) {
+    console.log("content-type:", res.headers["content-type"]);
+    console.log("content-length:", res.headers["content-length"]);
+
+    request(uri).pipe(fs.createWriteStream(filename)).on("close", callback);
+  });
+};
+
+
 /*app.get("/texttoimage", (req, res) => {
   res.render("texttoimage",{title:"FREE Text to JPG/PNG Image Online Tool  - Free Media Tools"});
 });
@@ -509,6 +580,10 @@ app.get('/compressaudio',(req,res) => {
   res.render('compressaudio',{title:"Compress Audio Online - Free Media Tools"})
 })
 
+app.get('/texttohandwriting',(req,res) => {
+  res.render('texttohandwriting',{title:"FREE Tool to Convert Text to Handwriting Image & PDF Document With Custom Fonts Online - Free Media Tools"})
+})
+
 app.get('/privacypolicy',(req,res) => {
   res.render('privacypolicy',{title:"Privacy Policy - Free Media Tools"})
 })
@@ -545,6 +620,10 @@ app.get('/imagetobase64',(req,res) => {
   res.render('imagetobase64',{title:"Image to Base64 Online - Free Media Tools"})
 })
 
+app.get('/twitterprofilepicdownloader',(req,res) => {
+  res.render('twitterprofilepicdownloader',{title:"FREE Twitter Profile Picture Downloader Using Username Online Tool - Free Media Tools"})
+})
+
 
 app.get('/base64toimage',(req,res) => {
   res.render('base64toimage',{title:"Base64 to Image Online - Free Media Tools"})
@@ -569,6 +648,10 @@ app.get('/youtubeurlshortener',(req,res) => {
 
 app.get('/compressfiles',(req,res) => {
   res.render('compressfiles',{title:"Compress Files Online - Free Media Tools"})
+})
+
+app.get('/distancecalculator',(req,res) => {
+  res.render('distancecalculator',{title:"FREE Distance & Time Calculator Between Two Locations & Addresses Online Tool - Free Media Tools"})
 })
 
 app.get('/jsontojsonschemagenerator',(req,res) => {
@@ -599,6 +682,94 @@ app.get('/texttospeech',(req,res) => {
   res.render('texttospeech',{title:"Free Text to Speech Online Converter - Free Media Tools"})
 })
 
+app.get('/youtubetrendingvideoscraper',(req,res) => {
+  res.render('youtubetrendingscraper',{title:"FREE Youtube Trending Videos of Any Country & Category Online Tool - Free Media Tools",data:''})
+})
+
+app.post("/getinfo", (req, res) => {
+  // get the country and the category
+
+    let country = req.body.countrycode;
+    
+    console.log(country)
+
+    let category = req.body.category;
+    
+    console.log(category)
+
+  const parameters = {
+    geoLocation: country,
+    parseCreatorOnRise: false,
+    page: category,
+  };
+
+  // call the youtube trending scraper
+
+  ytrend
+    .scrape_trending_page(parameters)
+    .then((data) => {
+      
+        res.render('youtubetrendingscraper',{title:"FREE Youtube Trending Videos of Any Country & Category Online Tool - Free Media Tools",data:data})
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+});
+
+app.get('/videothumbnailgenerator',(req,res) => {
+  res.render('videothumbnailgenerator',{title:"Free Video Thumbnail or Snapshot Generator For Youtube at any Time Online Tool - Free Media Tools"})
+})
+
+app.get('/instagramuserinfo',(req,res) => {
+  res.render('instagramuserinfo',{title:"Free Instagram User Profile Information Finder Online Tool - Free Media Tools",profile:''})
+})
+
+/* Create the base function to be ran */
+const start = async (username) => {
+  /* Here you replace the username with your actual instagram username that you want to check */
+  const BASE_URL = `https://www.instagram.com/${username}/`;
+
+  /* Send the request and get the html content */
+  let response = await requestpromise(BASE_URL, {
+    accept:
+      "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+    "accept-encoding": "gzip, deflate, br",
+    "accept-language":
+      "en-US,en;q=0.9,fr;q=0.8,ro;q=0.7,ru;q=0.6,la;q=0.5,pt;q=0.4,de;q=0.3",
+    "cache-control": "max-age=0",
+    "upgrade-insecure-requests": "1",
+    "user-agent":
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36",
+  });
+
+  /* Initiate Cheerio with the response */
+  let $ = cheerio.load(response);
+
+  /* Get the proper script of the html page which contains the json */
+  let script = $("script").eq(4).html();
+
+  /* Traverse through the JSON of instagram response */
+  let {
+    entry_data: {
+      ProfilePage: {
+        [0]: {
+          graphql: { user },
+        },
+      },
+    },
+  } = JSON.parse(/window\._sharedData = (.+);/g.exec(script)[1]);
+
+  /* Output the data */
+  return user;
+};
+
+app.post('/getinfo', (req, res) => {
+  start(req.body.username).then((data) => {
+      console.log(data);
+      res.render('index',{title:"Free Instagram User Profile Information Finder Online Tool - Free Media Tools",profile:data})
+  });  
+})
+
 app.get('/minifyjson',(req,res) => {
 
 res.redirect('https://minifyjson.com')
@@ -613,6 +784,10 @@ app.get('/mergepdf',(req,res) => {
   res.render('mergepdf',{title:"Concatenate or Merge Multiple PDF Files Online - Free Media Tools"})
 })
 
+app.get('/morsecodetranslator',(req,res) => {
+  res.render('morsecodetranslator',{title:"FREE Morse Code Encoder & Decoder Translator Online Tool - Free Media Tools"})
+})
+
 app.get('/docxtopdf',(req,res) => {
   res.render('docxtopdf',{title:"DOCX to PDF Word to PDF Free Online Converter - Free Media Tools"})
 })
@@ -623,6 +798,14 @@ app.get('/exceltopdf',(req,res) => {
 
 app.get('/ezoicadsensecalculator',(req,res) => {
   res.render('ezoicadsensecalculator',{title:"FREE Ezoic Ads or Google Adsense Income Calculator Online Tool by Views & epmv or rpm - Free Media Tools"})
+})
+
+app.get('/filesharing',(req,res) => {
+  res.render('filetransfer',{title:"FREE P2P Realtime File Sharing Transfer WebRTC Online Tool - Free Media Tools"})
+})
+
+app.get('/wavtoogg',(req,res) => {
+  res.render('wavtoogg',{title:"FREE WAV to OGG Audio Converter Online Tool - Free Media Tools"})
 })
 
 
@@ -646,6 +829,24 @@ app.get('/htmltopdf',(req,res)=>{
 	res.render("htmltopdf",{title:"HTML to PDF - Convert your HTML Documents to PDF Online For Free - FreeMediaTools.com"})
 
 })
+
+
+
+app.get('/getyoutubechannelid',(req,res)=>{
+
+	res.render("getyoutubechannelid",{title:"FREE Tool to Get Youtube Channel ID From URL Online - FreeMediaTools.com",channelid:''})
+
+})
+
+
+app.post("/getyoutubechannelid", (req, res) => {
+  channelId(req.body.channelurl).then((id) => {
+    // pass this id
+
+    res.render("getyoutubechannelid", {title:"FREE Tool to Get Youtube Channel ID From URL Online - FreeMediaTools.com", channelid:id});
+  });
+});
+
 
 app.post('/uploadvideotomp3',(req,res) =>{
   videotomp3upload2(req,res,function(err) {
@@ -745,6 +946,26 @@ app.post(
   })
 
 
+app.post('/getinstagraminfo',(req,res) => {
+    var link = "https://www.instagram.com/" + req.body.username
+
+    console.log(link)
+
+    userinstagram(link)
+        .then(data => {
+            console.log(`Full name is: ${data.fullName}`)
+            res.json({
+                stats:data
+            })
+          })
+          .catch(e => {
+            res.json({
+                stats:"error"
+            })
+          }) 
+})
+
+
 app.post(
     "/imageconverter",
     (req, res) => {
@@ -815,6 +1036,35 @@ app.post(
           })
       });
       })
+
+
+app.post('/wavtoogg', (req, res) => {
+    // upload the file from the html
+
+    outputfilename = Date.now() + "output.ogg"
+
+   
+
+            exec(`ffmpeg -i ${req.body.path} -c:a libvorbis -qscale:a 3 ${outputfilename}`, (err, stderr, stdout) => {
+                if (err) {
+                    console.log(err)
+                } else {
+                    console.log("conversion is successful")
+
+                    // download the ogg file as attachment
+
+                   res.json({
+                    
+                    path:outputfilename
+
+                  })
+
+              
+                }
+            })
+       
+
+})
 
 app.post(
         "/removeaudiofromvideo",
@@ -4506,6 +4756,21 @@ res.render('splittext',{title:'FREE Split Text with Space,Comma,Dash and Custom 
 
 })
 
+app.get('/deletepageinpdf',(req,res) =>{
+
+
+res.render('deletepageinpdf',{title:'FREE Tool to Delete Specific or All Pages inside PDF Document Online - FreeMediaTools.com'})
+
+})
+
+
+app.get('/countpagesinpdf',(req,res) =>{
+
+
+res.render('countpagesinpdf',{title:'FREE Tool to Count Number of Pages inside PDF Document Online - FreeMediaTools.com'})
+
+})
+
 app.get('/repeattext',(req,res) =>{
 
 
@@ -6495,5 +6760,4 @@ app.get('/alexarankchecker/:url',async(req,res) => {
 app.listen(PORT, () => {
   console.log(`App is listening on Port ${PORT}`);
 });
-
 

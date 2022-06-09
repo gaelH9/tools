@@ -1,0 +1,32 @@
+%section
+  %div
+    -256.times do
+      %div
+    .surface
+      .smoke
+      .flames
+      .flames2
+      .flames3
+      .flames4
+      .doorway
+      .mirror
+      .dog
+      .table
+      .floor
+%svg{:style => "display:none", :version => "1.1", :xmlns => "http://www.w3.org/2000/svg"}
+  %defs
+    %filter#squiggly-0
+      %feturbulence#turbulence{:basefrequency => "0.02", :numoctaves => "3", :result => "noise", :seed => "0"}
+      %fedisplacementmap#displacement{:in => "SourceGraphic", :in2 => "noise", :scale => "2"}
+    %filter#squiggly-1
+      %feturbulence#turbulence{:basefrequency => "0.02", :numoctaves => "3", :result => "noise", :seed => "1"}
+      %fedisplacementmap{:in => "SourceGraphic", :in2 => "noise", :scale => "3"}
+    %filter#squiggly-2
+      %feturbulence#turbulence{:basefrequency => "0.02", :numoctaves => "3", :result => "noise", :seed => "2"}
+      %fedisplacementmap{:in => "SourceGraphic", :in2 => "noise", :scale => "2"}
+    %filter#squiggly-3
+      %feturbulence#turbulence{:basefrequency => "0.02", :numoctaves => "3", :result => "noise", :seed => "3"}
+      %fedisplacementmap{:in => "SourceGraphic", :in2 => "noise", :scale => "3"}
+    %filter#squiggly-4
+      %feturbulence#turbulence{:basefrequency => "0.02", :numoctaves => "3", :result => "noise", :seed => "4"}
+      %fedisplacementmap{:in => "SourceGraphic", :in2 => "noise", :scale => "1"}

@@ -1,0 +1,491 @@
+// [00] TABLE OF CONTENTS ================================================================================
+// [01] VARIABLES
+// [02] GENERIC
+// [03] HEADER
+// [04] FOOTER
+// [98] BOOTSTRAP OVERRIDES
+// [99] NOTES
+
+
+// [01] VARIABLES ========================================================================================
+    // Font Families
+    $defaultFont: 'brandon-grotesque', sans-serif;
+    $bdviewmaster: 'bd-viewmaster', sans-serif;
+	$macho: 'macho', sans-serif;
+    
+    // Font Weights - Corrseponding Web Font Standards
+    $light: 300;
+    $regular: 400;
+    $medium: 500;
+    $semibold: 600;
+    $bold: 700;
+    
+    // Custom Colors
+    $black: hsla(0, 0%, 0%, 1);                 // black
+    $white: hsla(0, 100%, 100%, 1);             // white
+    $glass-1: rgba($white, 10%/100.0%);                // white, 10% opacity
+    $grey-1: hsla(0, 0%, 96%, 1);               // #F5F5F5
+    $blue: #0b4568;
+    $blue-1: #3265b0;
+    $blue-2: #22315c;
+
+    $btn-reg-bgc: $blue-1;                      // set to desired variable
+    $btn-reg-hbgc: #3264af;                     // bgc darkened by 5%
+
+    // Misc
+    $nav-bar-height: 60px;
+
+    // Images
+    $hero-bg: "../images/banner.jpg";
+    
+    $mobile-nav-max-width: 991px;              // this value will override default functionality; 767px default
+    $nav-min-width: ($mobile-nav-max-width + 1);
+    
+
+// [02] GENERIC ==========================================================================================
+    html {
+        position: relative;
+        min-height: 100%;
+        font-size: 100%;
+    }
+
+    body {
+        background-color: #f8f9f4;;
+        font-family: $defaultFont;
+        font-weight: $regular;
+        font-size: 16px;
+    }
+
+    #wrapper{
+        position: static;
+        height: 100%;
+        width: 100%;
+    }
+
+    #regPage {
+        .container {
+            padding: 50px 15px;
+        }
+    }
+
+    .mt-0 {
+        margin-top: 0px !important;
+    }
+
+    .mb-0 {
+        margin-bottom: 0px !important;
+    }
+
+    h3 {
+        color: $blue;
+        margin-top: 30px;
+    }
+
+    a {
+        color: $blue-1;
+        &.hover {
+            color: darken($blue-1, 5%);
+        }
+    }
+
+    p, span, li {
+       font-size: 18px;
+       @media(max-width: 768px){
+            font-size: 16px;
+       }
+    }
+
+    .content {
+        .container {
+            padding: 50px 15px 70px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 48px;
+            font-family: $bdviewmaster;
+            color: rgb(50, 77, 105);
+            margin-bottom: 30px;
+            @media (max-width: 768px){
+                font-size: 32px;
+            }
+        }
+        &#agenda {
+            p {
+                margin-bottom: 20px;
+            }
+            h3 {
+                margin-bottom: 15px;
+            }
+        }
+        &#activities {
+            b {
+                font-size: 18px;
+               @media(max-width: 768px){
+                    font-size: 16px;
+               }
+            }
+            p {
+                margin-bottom: 20px;
+            }
+        }
+
+    }
+    h2 {
+		font-size: 40px;
+        font-family: $bdviewmaster;
+        color: rgb(50, 77, 105);
+        @media (max-width: 768px){
+            font-size: 32px;
+        }
+    }
+
+
+// [03] HEADER ===========================================================================================
+    .header {
+        background: #f8f9f4 url($hero-bg) 50% 50% no-repeat;
+        position: relative;
+        text-align: center;
+        background-size: cover;
+        height: 600px;
+        @media(max-width: 991px){
+            height: 500px;
+        }
+        @media(max-width: 768px){
+            height: 400px;
+        }
+        h1 {
+            text-align: center;
+            color: $white;
+        }
+        .foreground_img {
+            padding-top: 7%;
+            padding-left: 6%;
+            @media(max-width: 1200px){
+                padding-top: 9%;
+            }
+            @media(max-width: 991px){
+                padding-top: 10%;
+            }
+            @media(max-width: 768px){
+                padding-top: 11%;
+            }
+            @media(max-width: 500px){
+                padding-top: 14%;
+            }
+        }      
+        .navbar {
+            margin: 0;
+            background-color: $blue;
+            border: none;
+            position: absolute;
+            top: 0;
+            width: 100%;
+            .navbar-header {
+                @media (max-width: $mobile-nav-max-width) {
+                    float: none;
+                }
+                .navbar-toggle {
+                    border: 1px solid $white;
+                    border-radius: 2px;
+                    transition: all 0.2s ease;
+                    @media (max-width: $mobile-nav-max-width) {
+                        display: block;
+                    }
+                    &:hover {
+                        border-color: $white;
+                        .icon-bar {
+                            background-color: $white;
+                        }
+                    }
+                    .icon-bar {
+                        background-color: $white;
+                        color: $white;
+                        transition: all 0.2s ease;
+                    }
+                }
+            }
+            .container-fluid {
+                position: relative;
+                @media (max-width: $mobile-nav-max-width) {
+                    background: $blue;
+                }
+                .navbar-collapse {
+                    margin-right: -15px;
+                    margin-left: -15px;
+                }
+            }
+            .navbar-collapse {
+                &.collapse {
+                    @media (max-width: $mobile-nav-max-width) {
+                        display: none !important;
+                        &.in {
+                            display: block !important;
+                        }
+                    }
+                }   
+                @media (max-width: $mobile-nav-max-width) {
+                    height: auto !important;    // overrides bootstrap.js that normally expands/collapses height
+                    overflow: visible;
+                    position: absolute;
+                    width: 100%;
+                    background-color: $blue;
+                    &[aria-expanded] {
+                        visibility: hidden;
+                        transition: visibility 0s linear 0.2s;
+                    }
+                    &[aria-expanded=true] {
+                        visibility: visible;
+                        transition-delay: 0s;
+                    }
+                }
+                .navbar-nav {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 0;
+                    margin: 0;
+                    width: 100%;
+                    float: none;
+                    @media (max-width: $mobile-nav-max-width) {
+                        display: block;
+                    }
+                    @media (max-width: $mobile-nav-max-width) {
+                        display: block;
+                        float: left;
+                    }
+                    &::before,
+                    &::after {
+                        content: none;
+                    }
+                    & > li {
+                        @media (max-width: $mobile-nav-max-width) {
+                            display: block;
+                            float: none;
+                        }
+
+                        span.vertical_bar{
+                            color: $white;
+                            @media (max-width: $mobile-nav-max-width) {
+                                display: none;
+                            }
+                        }
+                        @media (min-width: $mobile-nav-max-width) and (max-width: 1279px) {
+                            &:last-of-type {    // if the last list element is a dropdown, text expands to the left away from the right edge; use (-n+2) for last two elements, etc
+                                &.dropdown {
+                                    .dropdown-menu {
+                                        left: auto;
+                                        right: 0;
+                                    }
+                                }
+                            }
+                        }
+                        @media (max-width: $mobile-nav-max-width) {
+                            display: inline-block;
+                            float: left;
+                            clear: both;
+                        }
+                        & > a {
+                            display: inline-block;
+                            position: relative;
+                            font-size: 16px;
+                            text-decoration: none;
+                            color: $white;
+                            background-color: transparent !important;
+                            padding: 15px 20px;
+                            transition: all 0.2s ease;
+                            &:hover {
+                                color: $white;
+                                font-weight: bold;
+                            }
+                            @media(max-width: 1200px) and (min-width: 992px){
+                                padding: 15px;
+                            }
+                            @media(max-width: 1020px) and (min-width: 992px){
+                                padding: 15px;
+                                font-size: 13px;
+                            }
+                        }
+                        
+                        &.dropdown {
+                            .dropdown-menu {
+                                display: block;
+                                width: auto;
+                                min-width: 100%;
+                                visibility: hidden;
+                                border: none;
+                                border-radius: 1px;
+                                transition: visibility 0s linear 0.2s;
+                                & > li {
+                                    & > a {
+                                        background-color: transparent;
+                                        color: $white;
+                                        padding: 3px 10px;
+                                        text-decoration: none;
+                                        transition: background-color 0.2s ease, color 0.2s ease;
+                                        &:hover {
+                                        }
+                                    }
+                                }
+                            }
+                            &:hover,
+                            &.open {
+                                .dropdown-menu {
+                                    visibility: visible;
+                                    transition-delay: 0s;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+// [04] FOOTER ===========================================================================================
+    #footer {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        clear: both;
+        .blue_arrows {
+            height: 41px;
+            width: 100%;
+            background: transparent url('../images/footer_border.png') repeat-x top center;
+        }
+        .footer {
+            padding: 30px 0 50px;
+            box-shadow: inset 0px 8px 18px -9px #404040;
+            background-color: $blue;
+            * {
+                color: $white;
+                font-size: 16px;
+				font-family: $macho;
+            }                       
+            h5{
+                color: $white;
+                font-size: 20px;
+                margin-bottom: 20px;
+            }
+        }
+    }
+
+
+// [05] REGISTRATION =====================================================================================
+    .form-group {
+        label {
+            font-size: 14px;
+        }
+        &.has-feedback {
+            position: relative;
+            .form-control-feedback {
+                position: absolute;
+                top: 0;
+                right: 0;
+                z-index: 2;
+                display: none !important;
+                width: 34px;
+                height: 28px;
+                line-height: 28px;
+                text-align: center;
+                #tab-register &,
+                #tab-login & {
+                    top: 23px;
+                }
+            }
+        }
+        .form-control {
+            &:not([type='checkbox']):not([type='radio']) {
+                display: block;
+                width: 100%;
+                height: 40px;
+                border: 1px solid #e8e8e8;
+                padding: 4px 34px 4px 10px;
+                font-size: 15px;
+                font-weight: $regular;
+                line-height: 1.42857143;
+                color: $black;
+                border-radius: 4px;
+                box-shadow: inset 0 0px 1px #e8e8e8;
+                transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+            }
+        }
+        input {
+            @include form-control;
+        }
+        select {
+            @include form-control;
+        }
+        textarea {
+            @include form-control;
+            height: auto;
+            min-height: 39px;
+        }
+    }
+    input[type=checkbox], input[type=radio] {
+        margin-right: 4px;
+    }
+    .requiredInput {
+        //position: relative;    // didn't see this in the documentation but seems required?
+    }
+    .form-control-feedback {
+        top: 25px;    // temporary but should work most of the time, at least on reghome
+    }
+
+    .fv-form [placeholder]::-ms-clear {    // hide the clear icon for field using placeholder attribute on IE10/11
+        display: none;
+    }
+
+    .fv-form-bootstrap {    // declares bootstrap-specific validation styles
+        &.form-inline {
+            .form-group {
+                vertical-align: top;
+            }
+        }
+        .help-block {
+            margin: 0px;
+        }
+        .tooltip-inner {
+            text-align: left;
+        }
+        .fv-icon-no-label {    // bootstrap stacked form without label
+            top: 0;
+        }
+        .fv-bootstrap-icon-input-group {
+            z-index: 100;
+        }
+    }
+
+    .btn-reg {
+        color: $white;
+        background-color: $btn-reg-bgc;
+        border-color: $btn-reg-bgc;
+        margin: 0 5px 5px 0;
+        border-radius: 0px;
+        text-transform: uppercase;
+        &:hover, &:focus {
+            background-color: $btn-reg-hbgc;
+            border-color: $btn-reg-hbgc;
+            color: $white;
+        }
+    }
+
+
+// [98] BOOTSTRAP OVERRIDES ==============================================================================
+    .btn {
+        transition: color ease 0.1s, background-color ease 0.1s, border-color ease 0.1s;
+        border-radius: 4px;
+        font-size: 16px;
+    }
+   
+    .errorMsg, .messages {
+        color: red;
+    }
+
+    ul.messages, ul.errorMsg {
+        padding-left: 22px;
+        li {
+            color: red;
+        }
+    }
+
+// [99] NOTES ============================================================================================

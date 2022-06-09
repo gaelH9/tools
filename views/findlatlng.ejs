@@ -1,0 +1,66 @@
+<%-include('./partials/head'); %>
+  <body>
+    <%-include('./partials/navbar'); %>
+      <div class="container">
+          <h1 class="text-center">
+        Find Latitude and Longitude From Given Address Online
+      </h1>
+      <form id="form">
+        <div class="form-group container">
+          <label for="address">Enter Address: (Autocomplete)</label>
+          <input
+            class="form-control"
+            type="text"
+            placeholder="Enter your address"
+            required
+            id="searchaddress"
+          />
+        </div>
+      </form>
+
+      <div id="result"></div>
+
+    
+         
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIl2qIEbPhKGA-ODVUmjtGlqF_k8VjWP0&v=3.exp&sensor=false&libraries=places"></script>
+  <script>
+    // intialize autocomplete
+
+    var lat, long, address
+
+    var address = document.getElementById("searchaddress");
+
+    google.maps.event.addDomListener(window, "load", () => {
+      var places = new google.maps.places.Autocomplete(address);
+
+      console.log(places);
+
+      google.maps.event.addListener(places, "place_changed", () => {
+        var place = places.getPlace();
+
+        lat = place.geometry.location.lat();
+
+        long = place.geometry.location.lng();
+
+        console.log(lat);
+
+        console.log(long);
+
+        address = `
+        
+        <h1 class="text-center">Latitude is: ${lat}</h1>
+        <h1 class="text-center">Longitude is: ${long}</h1>
+        
+        `
+
+        $("#result").html(address)
+      });
+    });
+  </script>
+</html>

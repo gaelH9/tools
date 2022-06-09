@@ -1,0 +1,80 @@
+<%-include('./partials/head'); %>
+  <body>
+    <%-include('./partials/navbar'); %>
+      <div class="container">
+          <br>
+      <h1 class="text-center">Youtube Channel ID Extractor Online</h1>
+<form method="post" action="/getyoutubechannelid">
+      <div class="form-group">
+        <label for="youtubeurl">Youtube Channel URL:</label>
+        <input
+          type="text"
+          name="channelurl"
+          placeholder="https://www.youtube.com/c/CodingShiksha"
+          required
+          class="form-control"
+        >
+      </div>
+
+      <div class="form-group">
+        <button type="submit" id="button" class="btn btn-danger btn-block">
+          Get Youtube Channel Id
+        </button>
+      </div>
+
+</form>
+
+      <br><br>
+
+
+    <% if(channelid) {%>
+
+        <h1 id="result">Your Channel ID is: <%=channelid%></h1>
+
+    <%}%>
+
+      <br><br>
+
+      
+      <div class="form-group">
+        <button id="copy" style="display:none" class="btn btn-primary btn-block">
+          Copy to Clipboard
+        </button>
+      </div>
+        <br><br>
+        <%-include('./partials/services');%>
+        <%-include('./partials/jumbotron');%>
+      </div>
+</body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script>
+    var url = ""
+
+    $("#copy").on('click',function(){
+      copytoclipboard()
+    })
+
+function copytoclipboard(){
+  var textToCopy = $("#result").text();
+
+var myTemporaryInputElement = document.createElement("input");
+myTemporaryInputElement.type = "text";
+myTemporaryInputElement.value = textToCopy;
+
+document.body.appendChild(myTemporaryInputElement);
+
+myTemporaryInputElement.select();
+document.execCommand("Copy");
+
+document.body.removeChild(myTemporaryInputElement);
+
+Swal.fire(
+  'Good job!',
+  'URL Successfully Copied',
+  'success'
+)
+}
+
+</script>
+</html>
